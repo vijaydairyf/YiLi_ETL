@@ -1,0 +1,509 @@
+-------------------------------------------------------------------------------
+-- (c) copyright capgemini
+-- file name:               PJ_FETATION_ABORT_INFO.sql
+-- source table:            
+-- target table:            
+-- project:
+-- note:
+-- purpose:                 早产流产数据
+--=============================================================================
+-- creation date:       2019-11-27
+-- origin author:       capgemini
+--no
+-- version: %1.0%
+--
+-- modification history
+-- --------------------
+-- date         byperson        description
+-- ----------   --------------  -----------------------------------------------
+--2019-11-27 capgemini       
+-------------------------------------------------------------------------------
+
+insert  overwrite table BIGDATA_DM.PJ_FETATION_ABORT_INFO 
+select 
+if (t1.calving_cows   is null ,0,t1.calving_cows   )     , -- 产犊母牛数
+if (t1.premature_cows is null ,0, t1.premature_cows)      , -- 早产牛数
+if (t1.aborted_cows   is null ,0, t1.aborted_cows  )      , -- 流产牛数
+if (t2.fetation_cows  is null ,0, t2.fetation_cows )      , -- 流产牛怀孕牛数
+if (t4.calving_cows is null ,0,t4.calving_cows) as calving_cows_period ,
+if (t4.premature_cows is null ,0,t4.premature_cows)  as premature_cows_period,
+if (t4.aborted_cows is null ,0,t4.aborted_cows) as aborted_cows_period  ,
+if (t3.fetation_cows_period is null ,0,t3.fetation_cows_period) as fetation_cows_period ,
+if (t7.fetation_cows_mon is null ,0,t7.fetation_cows_mon)  ,
+if (t8.fetation_cows_mon_period  is null ,0,t8.fetation_cows_mon_period)  ,
+if (parity0_premature_cows is null,0,parity0_premature_cows ),
+if (parity0_aborted_cows   is null,0,parity0_aborted_cows   ),
+if (parity1_premature_cows is null,0,parity1_premature_cows ),
+if (parity1_aborted_cows   is null,0,parity1_aborted_cows   ),
+if (parity2_premature_cows is null,0,parity2_premature_cows ),
+if (parity2_aborted_cows   is null,0,parity2_aborted_cows   ),
+if (parity3_premature_cows is null,0,parity3_premature_cows ),
+if (parity3_aborted_cows   is null,0,parity3_aborted_cows   ),
+if (parity4_premature_cows is null,0,parity4_premature_cows ),
+if (parity4_aborted_cows   is null,0,parity4_aborted_cows   ),
+if (parity5_premature_cows is null,0,parity5_premature_cows ),
+if (parity5_aborted_cows   is null,0,parity5_aborted_cows   ),
+if (parity0_calving_cows  is null ,0,parity0_calving_cows),
+if (parity1_calving_cows  is null ,0,parity1_calving_cows),
+if (parity2_calving_cows  is null ,0,parity2_calving_cows),
+if (parity3_calving_cows  is null ,0,parity3_calving_cows),
+if (parity4_calving_cows  is null ,0,parity4_calving_cows),
+if (parity5_calving_cows  is null ,0,parity5_calving_cows),
+if (parity0_fetation_cows is null ,0,parity0_fetation_cows ),
+if (parity1_fetation_cows is null ,0,parity1_fetation_cows ),
+if (parity2_fetation_cows is null ,0,parity2_fetation_cows ),
+if (parity3_fetation_cows is null ,0,parity3_fetation_cows ),
+if (parity4_fetation_cows is null ,0,parity4_fetation_cows ),
+if (parity5_fetation_cows is null ,0,parity5_fetation_cows ),
+
+
+
+if (days210_premature_cows is null , 0 ,days210_premature_cows ),
+if (days220_premature_cows is null , 0 ,days220_premature_cows ),
+if (days230_premature_cows is null , 0 ,days230_premature_cows ),
+if (days240_premature_cows is null , 0 ,days240_premature_cows ),
+if (days250_premature_cows is null , 0 ,days250_premature_cows ),
+if (days43_aborted_cows    is null , 0 ,days43_aborted_cows    ),
+if (days63_aborted_cows    is null , 0 ,days63_aborted_cows    ),
+if (days83_aborted_cows    is null , 0 ,days83_aborted_cows    ),
+if (days103_aborted_cows   is null , 0 ,days103_aborted_cows   ),
+if (days123_aborted_cows   is null , 0 ,days123_aborted_cows   ),
+if (days143_aborted_cows   is null , 0 ,days143_aborted_cows   ),
+if (days163_aborted_cows   is null , 0 ,days163_aborted_cows   ),
+if (days183_aborted_cows   is null , 0 ,days183_aborted_cows   ),
+cast(regexp_replace(substr(t1.report_date,1,10),'-','') as bigint ) as report_date,
+t1.report_month,
+tb.farm_id as farm_id
+,t1.farm_code as  farm_code
+,tb.farm_name as  farm_name
+,tb.farm_org_id2 as big_area_id
+,tb.farm_org_code2 as big_area_code
+,tb.farm_org_name2 as big_area_name
+,tb.farm_org_id3 as area_id
+,tb.farm_org_code3 as area_code
+,tb.farm_org_name3 as area_name
+,tb.farm_org4_id as cities_id
+,tb.farm_org_code4 as cities_code
+,tb.farm_org_name4 as cities_name
+from  (
+      select
+        sum(calving_cows) as calving_cows,
+        sum(premature_cows) as premature_cows,
+         sum(aborted_cows) as aborted_cows ,
+         sum(parity0_premature_cows)  as parity0_premature_cows,
+         sum(parity0_aborted_cows  )  as parity0_aborted_cows ,
+         sum(parity1_premature_cows)  as parity1_premature_cows,
+         sum(parity1_aborted_cows  )  as parity1_aborted_cows ,
+         sum(parity2_premature_cows)  as parity2_premature_cows,
+         sum(parity2_aborted_cows  )  as parity2_aborted_cows ,
+         sum(parity3_premature_cows)  as parity3_premature_cows,
+         sum(parity3_aborted_cows  )  as parity3_aborted_cows ,
+         sum(parity4_premature_cows)  as parity4_premature_cows,
+         sum(parity4_aborted_cows  )  as parity4_aborted_cows ,
+         sum(parity5_premature_cows)  as parity5_premature_cows,
+         sum(parity5_aborted_cows  )  as parity5_aborted_cows ,
+         
+         sum(parity0_calving_cows) as parity0_calving_cows ,
+         sum(parity1_calving_cows) as parity1_calving_cows ,
+         sum(parity2_calving_cows) as parity2_calving_cows ,
+         sum(parity3_calving_cows) as parity3_calving_cows ,
+         sum(parity4_calving_cows) as parity4_calving_cows ,
+         sum(parity5_calving_cows) as parity5_calving_cows ,
+    
+         sum(days210_premature_cows)  as days210_premature_cows,
+         sum(days220_premature_cows)  as days220_premature_cows,
+         sum(days230_premature_cows)  as days230_premature_cows,
+         sum(days240_premature_cows)  as days240_premature_cows,
+         sum(days250_premature_cows)  as days250_premature_cows,
+         
+ 
+         sum(days43_aborted_cows )  as days43_aborted_cows   ,
+         sum(days63_aborted_cows )  as days63_aborted_cows   ,
+         sum(days83_aborted_cows )  as days83_aborted_cows   ,
+         sum(days103_aborted_cows)  as days103_aborted_cows  ,
+         sum(days123_aborted_cows)  as days123_aborted_cows  ,
+         sum(days143_aborted_cows)  as days143_aborted_cows  ,
+         sum(days163_aborted_cows)  as days163_aborted_cows  ,
+         sum(days183_aborted_cows)  as days183_aborted_cows  ,
+         report_date,
+         report_month,
+         concat (cast(substr(report_date,1,4) as bigint)-1,substr(report_date,5,6) ) as date_period ,
+         date_add(substr(report_date,1,10),-1) as pre_report_day,
+         add_months(date_add(substr(report_date,1,10),-1),-12) as pre_year_report_day,
+         farm_code
+      from BIGDATA_DW.W_FETATION_ABORT_INFO 
+
+      group by report_date,report_month,farm_code 
+)t1 left join (
+
+-- 查询 流产牛 怀孕牛数
+   select count(ear_no) as fetation_cows
+   ,sum(parity0_fetation_cows) as parity0_fetation_cows
+   ,sum(parity1_fetation_cows) as parity1_fetation_cows
+   ,sum(parity2_fetation_cows) as parity2_fetation_cows
+   ,sum(parity3_fetation_cows) as parity3_fetation_cows
+   ,sum(parity4_fetation_cows) as parity4_fetation_cows
+   ,sum(parity5_fetation_cows) as parity5_fetation_cows
+
+   ,farm_code
+   ,report_date
+
+   
+   
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,case when t1.lactation_cnt= 0  then 1 else 0 end as parity0_fetation_cows
+      ,case when t1.lactation_cnt= 1  then 1 else 0 end as parity1_fetation_cows
+      ,case when t1.lactation_cnt= 2  then 1 else 0 end as parity2_fetation_cows
+      ,case when t1.lactation_cnt= 3  then 1 else 0 end as parity3_fetation_cows
+      ,case when t1.lactation_cnt= 4  then 1 else 0 end as parity4_fetation_cows
+      ,case when t1.lactation_cnt>= 5 then 1 else 0 end as parity5_fetation_cows
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+  ) t2  on t1.farm_code = t2.farm_code and t2.report_date = t1.pre_report_day
+  
+
+-- 查询 流产牛 同期 怀孕牛数
+  left join (
+   select count(ear_no) as fetation_cows_period
+   ,farm_code
+   ,report_date
+
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null  and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+  ) t3  on t1.farm_code = t3.farm_code and t3.report_date = t1.pre_year_report_day
+  
+  
+  
+  
+  left join  data_lake.d_pty_farm_base tb on t1.farm_code = tb.farm_code
+  
+  -- 查询同期 早产牛，产犊怀孕牛数
+  left join (
+          select sum(calving_cows) as calving_cows,
+                 sum(premature_cows) as premature_cows,
+                 sum(aborted_cows) as aborted_cows ,
+                 substr(report_date,1,10) as report_date,        
+         farm_code
+      from BIGDATA_DW.W_FETATION_ABORT_INFO 
+    
+      group by report_date,farm_code 
+  
+  
+  ) t4 on t1.farm_code = t4.farm_code and t1.date_period = t4.report_date
+  
+  
+    
+  -- 查询同期 早产牛，每天怀孕牛数
+  left join (
+          select sum(calving_cows) as calving_cows,
+                 sum(premature_cows) as premature_cows,
+                 sum(aborted_cows) as aborted_cows ,
+                 substr(report_date,1,10) as report_date, 
+        concat (cast(substr(report_date,1,4) as bigint)-1,substr(report_date,5,6) ) as date_period ,
+        
+         farm_code
+      from BIGDATA_DW.W_FETATION_ABORT_INFO 
+    
+      group by report_date,farm_code 
+  
+  
+  ) t5 on t1.farm_code = t5.farm_code and t1.date_period = t5.report_date
+ 
+ -- 统计月度数据 和同期月度数据 检测怀孕牛 取值 前一个月最后一天检测怀孕牛数据
+  left join   
+(
+
+   select farm_code,report_month,DATE_ADD(concat(from_unixtime(unix_timestamp(cast(report_month as String),'yyyymm'),'yyyy-mm'),'-01'),-1) as last_day_of_month
+   
+   ,DATE_ADD(add_months (concat(from_unixtime(unix_timestamp(cast(report_month as String),'yyyymm'),'yyyy-mm'),'-01'),-12),-1) as last_day_of_month_period
+    from (
+   
+      SELECT farm_code,report_month
+    
+     ,count(1) from BIGDATA_DW.W_FETATION_ABORT_INFO
+    
+     group by report_month,farm_code
+   
+    )t1
+
+)t6 on   t1.farm_code = t6.farm_code and t1.report_month = t6.report_month
+    left join
+
+-- 查询 月度 流产牛 怀孕牛数 
+(
+   select count(ear_no) as fetation_cows_mon
+   ,farm_code
+   ,report_date
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+      cast(regexp_replace(substr(t1.initial_inspection_dt,1,7),'-','') as bigint ) as report_month ,-- 初检月份
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null  and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+  ) t7  on t6.farm_code = t7.farm_code and t6.last_day_of_month = t7.report_date
+  
+  left join  
+  -- 查询 月度 同期 流产牛 怀孕牛数
+  (
+   select count(ear_no) as fetation_cows_mon_period
+   ,farm_code
+   ,report_date
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+      cast(regexp_replace(substr(t1.initial_inspection_dt,1,7),'-','') as bigint ) as report_month ,-- 初检月份
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null  and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+  ) t8  on t6.farm_code = t8.farm_code and t6.last_day_of_month_period = t8.report_date
+  ;
+
+  
+  
+  
+  -----
+  ----早产流产柱状图应用表
+  ------
+
+  
+  
+insert  overwrite table BIGDATA_DM.PJ_FETATION_ABORT_TABLE 
+
+
+select t1.calving_cows
+,premature_cows
+,aborted_cows
+,t2.fetation_cows
+,t3.fetation_cows_mon
+,t1.lactation_type
+,labort_days_type
+,prema_days_type
+,data_type
+,case when lactation_type = '青年牛' then 1 
+when lactation_type = '一胎牛' then 2 
+when lactation_type = '二胎牛' then 3 
+when lactation_type = '三胎牛' then 4
+when lactation_type = '四胎牛' then 5 
+when lactation_type = '五胎及以上' then 6
+--2020/2/14
+when lactation_type = '其它' then 7
+end as lactation_rank
+,case when labort_days_type = '43-62天' then 1 
+when labort_days_type = '63-82天' then 2 
+when labort_days_type = '83-102天' then 3 
+when labort_days_type = '103-122天' then 4
+when labort_days_type = '123-142天' then 5 
+when labort_days_type = '143-162天' then 6
+when labort_days_type = '163-182天' then 7
+when labort_days_type = '183-201天' then 8 
+end as labort_rank
+,case when labort_days_type = '210-219天' then 1 
+when labort_days_type = '220-229天' then 2 
+when labort_days_type = '230-239天' then 3 
+when labort_days_type = '240-249天' then 4
+when labort_days_type = '250-262天' then 5 
+end as prema_rank
+
+,t1.report_date
+,t1.report_month
+
+,farm_name
+,big_area_name
+,area_name
+,cities_name
+from 
+(
+select sum(calving_cows) as calving_cows
+,sum(premature_cows) as  premature_cows 
+,sum(aborted_cows ) as aborted_cows
+,150 as fetation_cows
+,lactation_type
+,labort_days_type
+,prema_days_type
+,data_type
+,cast(regexp_replace(substr(report_date,1,10),'-','') as bigint ) as report_date
+,substr(date_add(report_date,-1),1,10) as pre_report_date
+,cast(regexp_replace(report_month,'-','') as bigint ) as report_month
+-- 获取查询月上月末日期
+,substr(date_add(concat(substr(report_date,1,7),'-01'),-1),1,10) as pre_mon_last_day 
+,farm_code
+,farm_name
+
+,big_area_name
+,area_name
+,cities_name
+from 
+(
+select cow_id
+,ear_no
+,pregant_days
+,lactation_cnt
+,grow_stat
+,calving_type
+,report_date
+,report_month
+,case when calving_type != '流产' then 1  else 0  end   as calving_cows 
+,case when calving_type= '早产' then 1  else 0  end  as premature_cows
+,case when calving_type = '流产'  then 1  else 0  end  as aborted_cows
+,case when (grow_stat= '青年牛'  ) then '青年牛' 
+      when (lactation_cnt= 1  ) then '一胎牛' 
+      when (lactation_cnt= 2  ) then '二胎牛' 
+      when (lactation_cnt= 3  ) then '三胎牛' 
+      when (lactation_cnt= 4  ) then '四胎牛' 
+      when (lactation_cnt >= 5  ) then '五胎及以上' 
+--2020/02/14
+      else  '其它'
+end as lactation_type -- 胎次类型
+,case when  calving_type   = '流产'  then 
+  case when pregant_days>=43 and pregant_days<=62 then '43-62天' 
+     when  pregant_days>=63 and pregant_days<=82 then '63-82天'
+     when pregant_days>=83 and pregant_days<=102 then  '83-102天' 
+     when pregant_days>=103 and pregant_days<=122 then '103-122天'
+     when pregant_days>=123 and pregant_days<=142 then '123-142天'
+     when pregant_days>=143 and pregant_days<=162 then '143-162天'
+     when pregant_days>=163 and pregant_days<=182 then '163-182天'
+     when pregant_days>=183 and pregant_days<=201 then '183-201天' 
+     else '其他流产天数' end 
+end    labort_days_type -- 流产天数类型         
+
+,case when  calving_type   = '早产'  then 
+  case when pregant_days>=210 and pregant_days<=219  then '210-219天'
+       when pregant_days>=220 and pregant_days<=229 then  '220-229天'
+       when pregant_days>=230 and pregant_days<=239 then  '230-239天'
+       when pregant_days>=240 and pregant_days<=249  then '240-249天'
+       when pregant_days>=250 and pregant_days<=262  then '250-262天'
+     else '其他早产天数' end 
+end    prema_days_type -- 早产天数类型         
+                           
+,case when calving_type = '早产' then '早产'
+     when calving_type = '流产' then '流产'
+     else '其他类型'  end as data_type
+
+,t2.farm_id
+,t2.farm_code
+,t2.farm_name
+,t2.farm_org_id2    as big_area_id
+,t2.farm_org_code2  as big_area_code
+,t2.farm_org_name2  as big_area_name
+,t2.farm_org_id3    as area_id
+,t2.farm_org_code3  as area_code
+,t2.farm_org_name3  as area_name
+,t2.farm_org4_id    as cities_id
+,t2.farm_org_code4  as cities_code
+,t2.farm_org_name4  as cities_name
+from (select * from BIGDATA_DW.W_FETATION_ABORT_INFO 
+
+)t1
+left join data_lake.d_pty_farm_base t2 on t1.farm_code = t2.farm_code
+)tr group by lactation_type
+,labort_days_type
+,prema_days_type
+,data_type
+,report_date
+,report_month
+,farm_code
+,farm_name
+,big_area_name
+,area_name
+,cities_name ) t1
+
+left join (
+  -- 查询日数据 流产牛怀孕牛数据
+   select count(ear_no) as fetation_cows
+   ,farm_code
+   ,report_date
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+      cast(regexp_replace(substr(t1.initial_inspection_dt,1,7),'-','') as bigint ) as report_month ,-- 初检月份
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null  and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+
+)t2 on t1.farm_code = t2.farm_code and t1.pre_report_date = t2.report_date
+
+--- 查询月度流产牛怀孕牛数据
+left join (
+  
+   select count(ear_no) as fetation_cows_mon
+   ,farm_code
+   ,report_date
+   from (
+      select t1.ear_no -- 牛只
+      ,t1.lactation_cnt -- 胎次
+      ,t1.grow_stat
+      ,t1.farm_code -- 牧场id
+      ,t1.insem_dt, -- 配种时间
+      t1.initial_inspection_result,  -- 初检结果
+      cast(regexp_replace(substr(t1.initial_inspection_dt,1,7),'-','') as bigint ) as report_month ,-- 初检月份
+      substr(t1.initial_inspection_dt,1,10) as report_date,-- 初检时间
+      t2.review_inspection_result,  -- 复检结果
+      t2.review_inspection_id  -- 复检数据id
+      from data_lake.d_evt_dairy_cow_initial_inspection t1 
+      left join data_lake.d_evt_dairy_cow_review_inspection t2
+      on t1.ear_no = t2.ear_no and t1.insem_dt = t2.insem_dt and t1.farm_code = t2.farm_code
+      where (t1.initial_inspection_result is not null  and t2.review_inspection_result = '复检+')
+      or  (t1.initial_inspection_result = '初检+' and t2.review_inspection_id is null)
+     ) tr group by tr.farm_code , tr.report_date
+
+)t3 on t1.farm_code = t3.farm_code and t1.pre_mon_last_day = t3.report_date  ;

@@ -1,0 +1,3 @@
+d_evt_dairy_cow_forbid   D_EVT_DAIRY_COW_FORBID
+
+d_evt_dairy_cow_cancel_forbid  D_EVT_DAIRY_COW_CANCEL_FORBID
