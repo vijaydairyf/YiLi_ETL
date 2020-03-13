@@ -1,0 +1,71 @@
+﻿---- 仪器分析 数仓建表 挤奶机 建表
+--
+--
+----
+
+
+
+
+CREATE TABLE BIGDATA_DW.W_FARM_MILKER_INFO(
+id  string comment '数据id'
+ ,cleaning_sys_flag string comment  '清洗系统控制单元'
+ ,surge_dev_flag string comment  '浪涌装置'
+ ,measure_method string comment  '计量方式'
+--,auto_metering_sys string comment  '自动计量系统'
+,auto_off_cup_flag string comment  '自动脱(收)杯'
+,install_year string comment  '安装年份'
+,install_month string comment  '安装月份'
+,year_month string comment   '安装年月' 
+,maintenance_agmt_flag string comment  '是否签署维保协议'
+,maintenance_period string comment  '维保周期'
+,oestrus_monitor_sys string comment  '发情监测系统'
+,milking_spot_brand string comment  '挤奶点品牌'
+,auto_type string comment  '自动化分类'
+,auto_clean_type string comment  '自动化清洗分类'
+,maintenance_type string comment  '维保 分类'
+,install_years_type string comment '安装年份分类 '
+,open_month  string comment '开站时间'
+,close_month  string comment '关站时间'
+,farm_code  string comment '牛场编号'
+,farm_name  string comment '牛场'
+,big_area_name string comment '大区'
+,area_name string comment '区域I'
+,cities_name  string comment '地区'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  ---- 仪器分析 数集 挤奶机 建表
+--W_FARM_MILKER_INFO
+--PJ_FARM_MILKER_INFO
+----
+  
+
+CREATE TABLE BIGDATA_DM.PJ_FARM_MILKER_INFO(
+
+year_month bigint comment   '安装年月' 
+,milking_spot_brand string comment  '挤奶机品牌'
+,auto_type string comment  '自动化分类'
+,auto_clean_type string comment  '自动化清洗分类'
+,maintenance_type string comment  '维保 分类'
+,install_years_type string comment '安装年份分类'
+,open_month  bigint comment '开站时间'
+,close_month  bigint comment '关站时间'
+,farm_code  string comment '牛场编号'
+,farm_name  string comment '牛场'
+,big_area_name string comment '大区'
+,area_name string comment '区域I'
+,cities_name  string comment '地区'
+
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+ 

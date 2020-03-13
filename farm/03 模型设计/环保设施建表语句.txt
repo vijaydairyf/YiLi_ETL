@@ -1,0 +1,85 @@
+﻿
+
+
+--- 环保设施 
+----
+--
+--
+----
+
+
+drop table BIGDATA_DW.W_FARM_GREEN_INFO;
+   
+CREATE TABLE BIGDATA_DW.W_FARM_GREEN_INFO(
+
+
+env_assess_rpt_flag string comment    '环评报告标识'
+, env_pro_facl_flag string comment    '有无环保设施标识'
+
+,forbid_field_flag string comment    '是否有禁养区'
+,limit_field_flag string comment    '是否有限养区'
+,manure_deal_fac string comment    '环保粪污处理设施'
+,manure_deal_method  string comment    '粪污处理方式'
+,env_pro_fac_install_year string comment    '环保设施建设安装年份'
+,env_pro_fac_install_month string comment    '环保设施建设安装月份'
+,year_month string comment    '环保设施建设安装年月'
+,eve_pro_farm string comment    '有环保设施牧场数'
+--,env_assess_reply_year  string comment    '环评批复时间_年份'
+--,env_assess_reply_month string comment    '环评批复时间_月份'
+,farm_pro_type  string comment    '牧场设备配备类型'
+,farm_pro_fac_type  string comment    '环保设备设施配备类型'
+,farm_pro_fac_year_type  string comment    '环保设备设施配备年限',
+open_month  string comment '开站时间',
+close_month  string comment '关站时间',
+farm_id string comment '牛场Id',
+farm_code string comment '牛场code',
+farm_name  string comment '牛场名字',
+big_area_id string comment '大区ID',
+big_area_code string comment '大区编号',
+big_area_name string comment '大区名',
+area_id string comment '区域ID',
+area_code string comment '区域编号',
+area_name string comment '区域名',
+cities_id string comment '城市群ID',
+cities_code string comment '城市群编号',
+cities_name string comment '城市名'
+ )                                         
+ 
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  ---- 仪器分析 数集 环保设备 建表
+--
+--  
+----
+
+CREATE TABLE BIGDATA_DM.PJ_FARM_GREEN_INFO(
+year_month bigint comment    '环保设施建设安装年月'
+,farm_pro_type  string comment    '牧场类型'
+,farm_pro_fac_type  string comment    '环保设备设施配备类型'
+,farm_pro_fac_year_type  string comment    '环保设备设施配备年限',
+open_month  bigint comment '开站时间',
+close_month  bigint comment '关站时间',
+farm_code string comment '牛场code',
+farm_name  string comment '牛场名字',
+  big_area_name string comment '大区名',
+
+
+  area_name string comment '区域名',
+
+cities_name string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+ 
+
+
+  
+  

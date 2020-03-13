@@ -1,0 +1,164 @@
+﻿
+   drop table if exists BIGDATA_DW.`W_COW_DISEASE_WEEDOUT_INFO`;
+CREATE TABLE BIGDATA_DW.`W_COW_DISEASE_WEEDOUT_INFO`(
+`cow_id` string comment '牛号',
+`ear_no` string comment '耳号',
+`month_age`  string comment '月龄',
+`milk_day` string comment '泌乳天数',
+`growth_stat` string comment '牛只类别',
+`disease_type` string comment '疾病种类',
+`disease_name`  string comment '疾病名称',
+`sick_cows` decimal(38,10) comment '发病牛数',
+`breath_sys_sick_cows`  decimal(38,10) comment '呼吸系统疾病发病牛数',
+`disgestive_sys_sick_cows`  decimal(38,10) comment '消化系统疾病发病牛数',
+`mammitits_sick_cows`  decimal(38,10) comment '乳房炎发病牛数',
+`limb_hoof_sick_cows`  decimal(38,10) comment '肢蹄病发病牛数',
+`breed_sys_sick_cows`  decimal(38,10) comment '繁殖系统疾病发病牛数',
+`other_sick_cows`  decimal(38,10) comment '其他疾病发病牛数',
+`death_cows`  decimal(38,10) comment '死亡牛数',
+
+`sick_weedout_cows`  decimal(38,10) comment '疾病淘汰牛数',
+`breath_sys_weedout_cows`  decimal(38,10) comment '呼吸系统疾病淘汰牛数',
+`disge_sys_weedout_cows`  decimal(38,10) comment '消化系统疾病淘汰牛数',
+`mammit_weedout_cows`  decimal(38,10) comment '乳房炎淘汰牛数',
+`limb_hoof_weedout_cows`  decimal(38,10) comment '肢蹄病淘汰牛数',
+`breed_sys_weedout_cows`  decimal(38,10) comment '繁殖系统疾病淘汰牛数',
+`other_sick_weedout_cows`  decimal(38,10) comment '其他疾病淘汰牛数',
+`weedout_cows`  decimal(38,10) comment '淘汰牛数',
+exit_categ  string comment '离群类别',
+`exit_type`  string comment '离群类型',
+`exit_reason`  string comment '离群原因',
+`data_type`string comment '数据类型：1发病牛数据，2淘汰牛数据',
+`report_date` string comment '发病日期/离群日期/报告时间',
+`report_month` string comment '发病月份/离群月份/报告月份',
+`active_weedout_cows`  decimal(38,10) comment '主动淘汰牛数',
+`change_farm_cows`  decimal(38,10) comment '转场牛数',
+`sale_cows`  decimal(38,10) comment '外卖牛数',
+`possive_weedout_cows`  decimal(38,10) comment '被动淘汰牛数',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  
+   drop table if exists BIGDATA_DM.`PJ_COW_DISEASE_WEEDOUT_INFO`;
+CREATE TABLE BIGDATA_DM.`PJ_COW_DISEASE_WEEDOUT_INFO`(
+
+
+
+`sick_cows` decimal(38,10) comment '发病牛数',
+`breath_sys_sick_cows`   decimal(38,10) comment '呼吸系统疾病发病牛数',
+`disgestive_sys_sick_cows`   decimal(38,10) comment '消化系统疾病发病牛数',
+`mammitits_sick_cows`   decimal(38,10) comment '乳房炎发病牛数',
+`limb_hoof_sick_cows`   decimal(38,10) comment '肢蹄病发病牛数',
+`breed_sys_sick_cows`   decimal(38,10) comment '繁殖系统疾病发病牛数',
+`other_sick_cows`   decimal(38,10) comment '其他疾病发病牛数',
+`death_cows`   decimal(38,10) comment '死淘牛数',
+weedout_cows   decimal(38,10) comment '淘汰牛数',
+`sick_weedout_cows`   decimal(38,10) comment '疾病淘汰牛数',
+`breath_sys_weedout_cows`   decimal(38,10) comment '呼吸系统疾病淘汰牛数',
+`disge_sys_weedout_cows`   decimal(38,10) comment '消化系统疾病淘汰牛数',
+`mammit_weedout_cows`   decimal(38,10) comment '乳房炎淘汰牛数',
+`limb_hoof_weedout_cows`   decimal(38,10) comment '肢蹄病淘汰牛数',
+`breed_sys_weedout_cows`   decimal(38,10) comment '繁殖系统疾病淘汰牛数',
+`other_sick_weedout_cows`   decimal(38,10) comment '其他疾病淘汰牛数',
+`active_weedout_cows`   decimal(38,10) comment '主动淘汰牛数',
+`change_farm_cows`   decimal(38,10) comment '转场牛数',
+`sale_cows`   decimal(38,10) comment '外卖牛数',
+`possive_weedout_cows`   decimal(38,10) comment '被动淘汰牛数',
+
+`sick_cows_period` decimal(38,10) comment '同期发病牛数',
+`breath_sys_sick_cows_period`   decimal(38,10) comment '同期呼吸系统疾病发病牛数',
+`disgestive_sys_sick_cows_period`   decimal(38,10) comment '同期消化系统疾病发病牛数',
+`mammitits_sick_cows_period`   decimal(38,10) comment '同期乳房炎发病牛数',
+`limb_hoof_sick_cows_period`   decimal(38,10) comment '同期肢蹄病发病牛数',
+`breed_sys_sick_cows_period`   decimal(38,10) comment '同期繁殖系统疾病发病牛数',
+`other_sick_cows_period`   decimal(38,10) comment '同期其他疾病发病牛数',
+
+`death_cows_period`   decimal(38,10) comment '同期死淘牛数',
+`sick_weedout_cows_period`   decimal(38,10) comment '同期疾病淘汰牛数',
+`breath_sys_weedout_cows_period`   decimal(38,10) comment '同期呼吸系统疾病淘汰牛数',
+`disge_sys_weedout_cows_period`   decimal(38,10) comment '同期消化系统疾病淘汰牛数',
+`mammit_weedout_cows_period`   decimal(38,10) comment '同期乳房炎淘汰牛数',
+`limb_hoof_weedout_cows_period`   decimal(38,10) comment '同期肢蹄病淘汰牛数',
+`breed_sys_weedout_cows_period`   decimal(38,10) comment '同期繁殖系统疾病淘汰牛数',
+`other_sick_weedout_cows_period`   decimal(38,10) comment '同期其他疾病淘汰牛数',
+
+`weedout_cows_period`   decimal(38,10) comment '同期淘汰牛数',
+`active_weedout_cows_period`   decimal(38,10) comment '同期主动淘汰牛数',
+`change_farm_cows_period`   decimal(38,10) comment '同期转场牛数',
+`sale_cows_period`   decimal(38,10) comment '同期外卖牛数',
+`possive_weedout_cows_period`   decimal(38,10) comment '同期被动淘汰牛数',
+-- 筛选器 一类级别
+`cows_level1_code` string comment '牛只一级类别',
+`cows_level2_code` string comment '牛只二级类别',
+`disease_type` string comment '疾病种类',
+`report_month`  bigint  comment '发病日期/离群日期',
+  `farm_name` string comment '牧场名',
+
+  `big_area_name` string comment '大区名',
+
+  `area_name` string comment '区域名',
+
+  `cities_name` string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  
+     drop table if exists BIGDATA_DM.`PJ_COW_DISEASE_WEEDOUT_TABLE`;
+CREATE TABLE BIGDATA_DM.`PJ_COW_DISEASE_WEEDOUT_TABLE`(
+
+
+
+`cow_num` decimal(38,10) comment '牛数',
+`cow_num_period` decimal(38,10) comment '同期牛数',
+`cows_level1_code`  string comment '筛选器一级类别',
+`cows_level2_code`  string comment '筛选器二级类别',
+`disease_type`  string comment '疾病类型',
+`disease_name`  string comment '疾病名称',
+
+order_column  decimal(38,10) comment '排序字段',
+
+`data_type`  bigint  comment '数据类别',
+ 
+`report_month`  bigint  comment '发病日期/离群日期',
+  `farm_name` string comment '牛场名称',
+  `big_area_name` string comment '大区名',
+
+  `area_name` string comment '区域名',
+
+  `cities_name` string comment '城市名',
+ `exit_categ`  string comment '离群类别',
+`exit_type`  string comment '离群类型',
+`exit_reason`  string comment '离群原因'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+ 

@@ -1,0 +1,78 @@
+﻿
+
+
+
+------ 预计产犊，预计干奶 数据统计
+---
+---
+-----
+
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_PREDICT_CALVE_DRYMILK_INFO;
+CREATE TABLE BIGDATA_DW.W_PREDICT_CALVE_DRYMILK_INFO(
+
+  cow_id string comment '奶牛ID',
+
+
+  grow_stat  string comment '生长状态',
+  pre_wean_milk_dt string comment '预计干奶时间',
+  pre_calving_dt string comment '预计产犊时间',
+  pre_3mon_calve_cows decimal(38,10)  comment '未来三个月预计产犊牛数',
+  pre_3mon_dry_cows decimal(38,10)  comment '未来三个月预计干奶牛数',
+  
+  next_1mon_calve_cows decimal(38,10)  comment '下月预计产犊牛数',
+  next_1mon_dry_cows   decimal(38,10)  comment '下月预计干奶牛数',
+  next_2mon_calve_cows  decimal(38,10)  comment '第二月预计产犊牛数',
+  next_2mon_dry_cows    decimal      (38,10)  comment '第二月预计干奶牛数',
+  next_3mon_calve_cows  decimal(38,10)  comment '第三个月预计产犊牛数',
+  next_3mon_dry_cows    decimal(38,10)  comment '第三个月预计干奶牛数',
+
+  
+  report_date string comment '报告时间',
+  report_month string comment '报告月份',
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+ )
+ 
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  
+  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_PREDICT_CALVE_DRYMILK_INFO;
+CREATE TABLE BIGDATA_DM.PJ_PREDICT_CALVE_DRYMILK_INFO(
+  pre_3mon_calve_cows decimal(38,10)  comment '未来三个月预计产犊牛数',
+  pre_3mon_dry_cows decimal(38,10)  comment '未来三个月预计干奶牛数',
+  
+  next_1mon_calve_cows decimal(38,10)  comment '下月预计产犊牛数',
+  next_1mon_dry_cows   decimal(38,10)  comment '下月预计干奶牛数',
+  next_2mon_calve_cows  decimal(38,10)  comment '第二月预计产犊牛数',
+  next_2mon_dry_cows    decimal      (38,10)  comment '第二月预计干奶牛数',
+  next_3mon_calve_cows  decimal(38,10)  comment '第三个月预计产犊牛数',
+  next_3mon_dry_cows    decimal(38,10)  comment '第三个月预计干奶牛数',
+
+  report_month bigint comment '报告月份',
+  farm_name string comment '牛场名称',
+  big_area_name string comment '大区名',
+  area_name string comment '区域名',
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  

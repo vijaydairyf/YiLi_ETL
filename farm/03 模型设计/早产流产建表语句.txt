@@ -1,0 +1,212 @@
+﻿ 
+ --- 早产流产 数据仓库表 
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_FETATION_ABORT_INFO;
+CREATE TABLE BIGDATA_DW.W_FETATION_ABORT_INFO(
+cow_id string comment '牛只id',
+ear_no string comment '牛耳号',
+pregant_days bigint comment'怀孕天数',
+lactation_cnt bigint comment'胎次',
+grow_stat bigint comment'牛只类别',
+calving_type string comment'产犊类型',
+calving_cows decimal(38,10) comment '产犊母牛牛数',
+
+premature_cows decimal(38,10) comment '早产牛数',
+
+aborted_cows decimal(38,10) comment '流产牛数',
+
+parity0_premature_cows decimal(38,10) comment '青年牛早产牛数',
+parity0_aborted_cows decimal(38,10) comment '青年牛流产牛数',
+parity1_premature_cows decimal(38,10) comment '一胎早产牛数',
+parity1_aborted_cows decimal(38,10) comment '一胎流产牛数',
+parity2_premature_cows decimal(38,10) comment '二胎早产牛数',
+parity2_aborted_cows decimal(38,10) comment '二胎流产牛数',
+parity3_premature_cows decimal(38,10) comment '三胎早产牛数',
+parity3_aborted_cows decimal(38,10) comment '三胎流产牛数',
+parity4_premature_cows decimal(38,10) comment '四胎早产牛数',
+parity4_aborted_cows decimal(38,10) comment '四胎流产牛数',
+parity5_premature_cows decimal(38,10) comment '五胎早产牛数',
+parity5_aborted_cows decimal(38,10) comment '五胎流产牛数',
+      
+parity0_calving_cows decimal(38,10) comment '青年牛产犊母牛数',
+parity1_calving_cows decimal(38,10) comment '一胎产犊母牛数',
+parity2_calving_cows decimal(38,10) comment '二胎产犊母牛数',
+parity3_calving_cows decimal(38,10) comment '三胎产犊母牛数',
+parity4_calving_cows decimal(38,10) comment '四胎产犊母牛数',
+parity5_calving_cows decimal(38,10) comment '五胎产犊母牛数',
+
+days210_premature_cows decimal(38,10) comment '210-219天早产牛数',
+days220_premature_cows decimal(38,10) comment '220-229天早产牛数',
+days230_premature_cows decimal(38,10) comment '230-239天早产牛数',
+days240_premature_cows decimal(38,10) comment '240-249天早产牛数',
+days250_premature_cows decimal(38,10) comment '250-262天早产牛数',
+
+
+
+days43_aborted_cows decimal(38,10) comment '43-62天流产牛数',
+days63_aborted_cows decimal(38,10) comment '63-82天流产牛数',
+days83_aborted_cows decimal(38,10) comment '83-102天流产牛数',
+days103_aborted_cows decimal(38,10) comment '103-122天流产牛数',
+days123_aborted_cows decimal(38,10) comment '123-142天流产牛数',
+days143_aborted_cows decimal(38,10) comment '143-162天流产牛数',
+days163_aborted_cows decimal(38,10) comment '163-182天流产牛数',
+days183_aborted_cows decimal(38,10) comment '183-201天流产牛数',
+report_date string comment'报告时间',
+report_month string comment'报告月份',
+--  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号'
+--  farm_name string comment '牛场名称',
+--  big_area_id string comment '大区ID',
+--  big_area_code string comment '大区编号',
+--  big_area_name string comment '大区名',
+--  area_id string comment '区域ID',
+--  area_code string comment '区域编号',
+--  area_name string comment '区域名',
+--  cities_id string comment '城市群ID',
+--  cities_code string comment '城市群编号',
+--  cities_name string comment '城市名'
+)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC; 
+  
+  
+  
+  
+  -- 早产率 流产率 数据集市表  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FETATION_ABORT_INFO;
+CREATE TABLE BIGDATA_DM.PJ_FETATION_ABORT_INFO(
+calving_cows decimal(38,10) comment '产犊母牛数',
+premature_cows decimal(38,10) comment '早产牛数',
+aborted_cows decimal(38,10) comment '流产牛数',
+fetation_cows decimal(38,10) comment '怀孕牛数--流产率',
+
+
+calving_cows_period decimal(38,10) comment '同期产犊怀孕牛数--早产率',
+premature_cows_period decimal(38,10) comment '同期早产牛数',
+aborted_cows_period decimal(38,10) comment '同期流产牛数',
+fetation_cows_period decimal(38,10) comment '同期怀孕牛数--流产率',
+
+
+fetation_cows_mon decimal(38,10) comment '怀孕牛数月度数据--流产率',
+fetation_cows_mon_period decimal(38,10) comment '同期怀孕牛数月度数据--流产率',
+
+parity0_premature_cows decimal(38,10) comment '青年牛早产牛数',
+parity0_aborted_cows decimal(38,10) comment '青年牛流产牛数',
+      
+parity1_premature_cows decimal(38,10) comment '一胎早产牛数',
+parity1_aborted_cows decimal(38,10) comment '一胎流产牛数',
+      
+parity2_premature_cows decimal(38,10) comment '二胎早产牛数',
+parity2_aborted_cows decimal(38,10) comment '二胎流产牛数',
+      
+parity3_premature_cows decimal(38,10) comment '三胎早产牛数',
+parity3_aborted_cows decimal(38,10) comment '三胎流产牛数',
+      
+parity4_premature_cows decimal(38,10) comment '四胎早产牛数',
+parity4_aborted_cows decimal(38,10) comment '四胎流产牛数',
+      
+parity5_premature_cows decimal(38,10) comment '五胎早产牛数',
+parity5_aborted_cows decimal(38,10) comment '五胎流产牛数',
+      
+parity0_calving_cows decimal(38,10) comment '青年牛产犊母牛数',
+parity1_calving_cows decimal(38,10) comment '一胎产犊母牛数',
+parity2_calving_cows decimal(38,10) comment '二胎产犊母牛数',
+parity3_calving_cows decimal(38,10) comment '三胎产犊母牛数',
+parity4_calving_cows decimal(38,10) comment '四胎产犊母牛数',
+parity5_calving_cows decimal(38,10) comment '五胎产犊母牛数',
+      
+      
+parity0_fetation_cows decimal(38,10) comment '青年怀孕母牛数',
+parity1_fetation_cows decimal(38,10) comment '一胎怀孕母牛数',
+parity2_fetation_cows decimal(38,10) comment '二胎怀孕母牛数',
+parity3_fetation_cows decimal(38,10) comment '三胎怀孕母牛数',
+parity4_fetation_cows decimal(38,10) comment '四胎怀孕母牛数',
+parity5_fetation_cows decimal(38,10) comment '五胎怀孕母牛数',
+
+days210_premature_cows decimal(38,10) comment '210-219天早产牛数',
+    
+days220_premature_cows decimal(38,10) comment '220-229天早产牛数',
+    
+days230_premature_cows decimal(38,10) comment '230-239天早产牛数',
+    
+days240_premature_cows decimal(38,10) comment '240-249天早产牛数',
+    
+days250_premature_cows decimal(38,10) comment '250-262天早产牛数',
+
+days43_aborted_cows decimal(38,10) comment '43-62天流产牛数',
+    
+days63_aborted_cows decimal(38,10) comment '63-82天流产牛数',
+    
+days83_aborted_cows decimal(38,10) comment '83-102天流产牛数',
+
+days103_aborted_cows decimal(38,10) comment '103-122天流产牛数',
+    
+days123_aborted_cows decimal(38,10) comment '123-142天流产牛数',
+    
+days143_aborted_cows decimal(38,10) comment '143-162天流产牛数',
+    
+days163_aborted_cows decimal(38,10) comment '163-182天流产牛数',
+    
+days183_aborted_cows decimal(38,10) comment '183-201天流产牛数',
+
+report_date bigint comment'报告时间',
+report_month bigint comment'报告月份',
+  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号',
+  farm_name string comment '牛场名称',
+  big_area_id string comment '大区ID',
+  big_area_code string comment '大区编号',
+  big_area_name string comment '大区名',
+  area_id string comment '区域ID',
+  area_code string comment '区域编号',
+  area_name string comment '区域名',
+  cities_id string comment '城市群ID',
+  cities_code string comment '城市群编号',
+  cities_name string comment '城市名'
+)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC;
+  
+
+ -- 早产率 流产率 数据集市表  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FETATION_ABORT_TABLE;
+CREATE TABLE BIGDATA_DM.PJ_FETATION_ABORT_TABLE(
+calving_cows decimal(38,10) comment '产犊母牛数--早产率',
+premature_cows decimal(38,10) comment '早产牛数',
+aborted_cows decimal(38,10) comment '流产牛数',
+fetation_cows decimal(38,10) comment '怀孕牛数--流产率',
+fetation_cows_mon decimal(38,10) comment '怀孕牛数--流产率',
+
+lactation_type String  comment '胎次类型',
+
+labort_days_type String comment '流产天数类型',
+
+prema_days_type String comment '早产天数类型',
+
+data_type String comment '数据类型',
+
+lactation_rank  int comment '胎次排序',
+labort_rank  int comment '流产排序',
+prema_rank  int comment '早产排序',
+report_date bigint comment'报告时间',
+
+report_month bigint comment'报告月份',
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC;

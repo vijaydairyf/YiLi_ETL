@@ -1,0 +1,160 @@
+﻿DROP TABLE IF EXISTS BIGDATA_DW.`W_MILK_PRODUCT_INFO`;
+CREATE TABLE `BIGDATA_DW`.`W_MILK_PRODUCT_INFO`(
+  `yl_milk` decimal(38,10) comment '伊利收奶量',   
+  `social_milk` decimal(38,10) comment '社会奶量/奶量情况-销售量(交其他)',
+  `gl_milk` decimal(38,10) comment '隔离奶量',
+  `total_milk` decimal(38,10) comment '总产奶量',
+  `sales_milk` decimal(38,10) comment '商品奶量',
+  self_use_cow_volume  decimal(38,10) comment '自用奶量',
+    sale_volume_other  decimal(38,10) comment '销售量(交其他)',
+  `cow_count` bigint comment '成母牛头数',
+  `lacation_cows` bigint comment '泌乳牛头数',
+  `milk_cows` bigint comment '上厅挤奶牛头数',
+  `sign_date` string  comment '签约日期/合同签订日期',
+  `open_date` string comment '开站日期',
+  `close_date` string comment '关停日期',
+  `provide_date` string comment '供奶日期',
+  `farm_type` string comment '模式等级（ABCD，大型）',
+  `fixed_start_date` string comment '固定站时间时间选择器应用字段',
+  `fixed_end_date` string comment '固定站时间时间选择器应用字段',
+  `report_date` string  comment '报告时间',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+ )
+  PARTITIONED BY ( 
+  `date_` string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+
+
+
+  -- 数据集市 建表语句  (通过 case when 来进行判断 符合就进行赋值  ，不符合就赋值为0 ，数据只能细化到牧场级别，因为固定站时间为牧场级别）
+  
+  DROP TABLE IF EXISTS BIGDATA_DM.`PJ_MILK_PRODUCT_INFO`;
+CREATE TABLE `BIGDATA_DM`.`PJ_MILK_PRODUCT_INFO`(
+  `yl_milk` decimal(38,10) comment '伊利收奶量',   
+  `yl_milk_period` decimal(38,10) comment '同期伊利收奶量',  
+  `social_milk` string comment '社会奶量',
+  `gl_milk` decimal(38,10) comment '隔离奶量',
+  `total_milk_product` decimal(38,10) comment '总产奶量',
+  `total_milk_period` decimal(38,10) comment '同期总产奶量',  
+  `sales_milk` decimal(38,10) comment '商品奶量',
+  `cow_count` bigint comment '成母牛头数',
+  `lacation_cows` bigint comment '泌乳牛头数',
+  `milk_cows` bigint comment '上厅挤奶牛头数',
+  `Atype_milk_prod` decimal(38,10) comment 'A类牧场日均收奶量',
+  `Btype_milk_prod` decimal(38,10) comment 'B类牧场日均收奶量',
+  `Ctype_milk_prod` decimal(38,10) comment 'C类牧场日均收奶量',
+  `Dtype_milk_prod` decimal(38,10) comment 'D类牧场日均收奶量',
+  `social_farm_milk_prod` decimal(38,10) comment '社会牧场日收奶量',
+  `big_farm_milk_prod` decimal(38,10) comment '大型牧业牧场日收奶量',
+  `all_farm_milk_prod` decimal(38,10) comment '所有牧场日收奶量',
+  `sign_date` bigint  comment '签约日期/合同签订日期',
+  `open_date` bigint comment '开站日期',
+  `close_date` bigint comment '关停日期',
+  `provide_date` bigint comment '供奶日期',
+  `farm_type` string comment '模式等级（ABCD，大型）',
+  `fixed_start_date` bigint comment '固定站时间时间选择器应用字段',
+  `fixed_end_date` bigint comment '固定站时间时间选择器应用字段',
+   
+      `is_only_support` string comment '是否独家供奶 (0否 1是)',
+  `is_new_open` string comment '是否新开站 (0否 1是)',
+  `is_new_close` string comment '是否新流失站 (0否 1是)',
+  `is_social_farm` string comment '是否社会牧场 (0否 1是)',
+
+   
+  `report_month` bigint comment '数据月报时间',  
+  `report_date` bigint comment '报告时间',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;
+
+  
+  
+    DROP TABLE IF EXISTS BIGDATA_DM.`PJ_MILK_PRODUCT_INFO1`;
+CREATE TABLE `BIGDATA_DM`.`PJ_MILK_PRODUCT_INFO1`(
+    `is_only_support` string comment '是否独家供奶 (0否 1是'),
+    is_only_support string 
+   )
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;
+  
+
+  
+   -- 数据集市 建表语句  (通过 case when 来进行判断 符合就进行赋值  ，不符合就赋值为0 ，数据只能细化到牧场级别，因为固定站时间为牧场级别）
+  
+  DROP TABLE IF EXISTS BIGDATA_DM.`PJ_MILK_PRODUCT_INFO_MONTH`;
+CREATE TABLE `BIGDATA_DM`.`PJ_MILK_PRODUCT_INFO_MONTH`(
+  `yl_milk` decimal(38,10) comment '伊利收奶量',   
+  `yl_milk_period` decimal(38,10) comment '同期伊利收奶量',  
+  `social_milk` string comment '社会奶量',
+  `gl_milk` decimal(38,10) comment '隔离奶量',
+  `total_milk_product` decimal(38,10) comment '总产奶量',
+  `sales_milk` decimal(38,10) comment '商品奶量',
+  `cow_count` bigint comment '成母牛头数',
+  `lacation_cows` bigint comment '泌乳牛头数',
+  `milk_cows` bigint comment '上厅挤奶牛头数',
+  `Atype_milk_prod` decimal(38,10) comment 'A类牧场日均收奶量',
+  `Btype_milk_prod` decimal(38,10) comment 'B类牧场日均收奶量',
+  `Ctype_milk_prod` decimal(38,10) comment 'C类牧场日均收奶量',
+  `Dtype_milk_prod` decimal(38,10) comment 'D类牧场日均收奶量',
+  `social_farm_milk_prod` decimal(38,10) comment '社会牧场日收奶量',
+  `big_farm_milk_prod` decimal(38,10) comment '大型牧业牧场日收奶量',
+  `all_farm_milk_prod` decimal(38,10) comment '所有牧场日收奶量',
+  `farm_type` string comment '模式等级（ABCD，大型）',
+  sign_month  bigint comment '签约月份',
+    open_month  bigint comment '开站月份',
+  close_month  bigint comment '关站月份',
+  
+  
+  `fixed_start_month` bigint comment '固定站时间时间选择器应用字段',
+  `fixed_end_month` bigint comment '固定站时间时间选择器应用字段',
+  `report_month` bigint comment '数据月报时间',  
+--  `farm_id` string comment '牛场Id',
+--  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+--  `big_area_id` string comment '大区ID',
+--  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+--  `area_id` string comment '区域ID',
+--  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+--  `cities_id` string comment '城市群ID',
+--  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;

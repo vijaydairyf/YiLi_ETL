@@ -1,0 +1,81 @@
+﻿
+
+--  怀孕率 分析 时间选择为情期
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_PREGNANT_RATE_INFO;
+CREATE TABLE BIGDATA_DW.W_PREGNANT_RATE_INFO(
+
+  to_pregnancy_cow_qty  decimal(38,10)   comment '应怀孕牛数', 
+  
+  actual_pregnancy_cow_qty  decimal(38,10)   comment '实际怀孕牛数', 
+
+  to_estrus_young_cow_qty  decimal(38,10)   comment '应发情牛',
+
+  actual_insem_cow_qty  decimal(38,10)   comment '实际参配牛',
+  to_pregnancy_cow_qty_period  decimal(38,10)   comment '同期应怀孕牛数', 
+  actual_pregnancy_cow_qty_period  decimal(38,10)   comment '同期实际怀孕牛数', 
+  to_estrus_young_cow_qty_period  decimal(38,10)   comment '同期应发情牛',
+  actual_insem_cow_qty_period  decimal(38,10)   comment '同期实际参配牛',
+  estrus_period_start string comment '情期开始时间',
+  estrus_period_end string comment '情期结束时间',
+  estrus_period string comment '情期',
+  year bigint comment '年份',
+  rank_num bigint comment '情期数',
+  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号',
+  farm_name string comment '牛场名称',
+  big_area_id string comment '大区ID',
+  big_area_code string comment '大区编号',
+  big_area_name string comment '大区名',
+  area_id string comment '区域ID',
+  area_code string comment '区域编号',
+  area_name string comment '区域名',
+  cities_id string comment '城市群ID',
+  cities_code string comment '城市群编号',
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  --  怀孕率 分析 时间选择为情期
+  
+  DROP TABLE IF EXISTS BIGDATA_DM.PJ_PREGNANT_RATE_INFO;
+CREATE TABLE BIGDATA_DM.PJ_PREGNANT_RATE_INFO(
+
+  to_pregnancy_cow_qty  decimal(38,10)   comment '应怀孕牛数', 
+  actual_pregnancy_cow_qty  decimal(38,10)   comment '实际怀孕牛数', 
+  to_estrus_young_cow_qty  decimal(38,10)   comment '应发情牛',
+  actual_insem_cow_qty  decimal(38,10)   comment '实际参配牛',
+
+  to_pregnancy_cow_period  decimal(38,10)   comment '同期应怀孕牛数', 
+  actual_pregnancy_cow_period  decimal(38,10)   comment '同期实际怀孕牛数', 
+  to_estrus_young_cow_period  decimal(38,10)   comment '同期应发情牛',
+  actual_insem_cow_period  decimal(38,10)   comment '同期实际参配牛',
+  estrus_period_start  bigint comment '情期开始时间',
+  estrus_period_end  bigint    comment '情期结束时间',
+  estrus_period string  comment '情期',
+  year bigint comment '年份',
+  rank_num bigint comment '情期数',
+  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号',
+  farm_name string comment '牛场名称',
+  big_area_id string comment '大区ID',
+  big_area_code string comment '大区编号',
+  big_area_name string comment '大区名',
+  area_id string comment '区域ID',
+  area_code string comment '区域编号',
+  area_name string comment '区域名',
+  cities_id string comment '城市群ID',
+  cities_code string comment '城市群编号',
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;

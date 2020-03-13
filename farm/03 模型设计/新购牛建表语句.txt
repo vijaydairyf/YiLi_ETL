@@ -1,0 +1,83 @@
+﻿------ 新购牛数据统计
+---
+---
+-----
+
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_BUY_COW_INFO;
+CREATE TABLE BIGDATA_DW.W_BUY_COW_INFO(
+
+  ear_no string comment '牛号',
+  entry_type string comment '入群类型',
+  entry_src string comment '入群来源',
+
+  grow_stat  string comment '生长状态',
+  new_cows decimal(38,10)  comment '新购牛头数',
+  new_adult_cows decimal(38,10)  comment '新购成母牛头数',
+  new_reserve_cows decimal(38,10)  comment '新购后备牛头数',
+  report_date string comment '报告时间',
+  report_month string comment '报告月份',
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  
+  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_BUY_COW_INFO;
+CREATE TABLE BIGDATA_DM.PJ_BUY_COW_INFO(
+  new_cows decimal(38,10)  comment '新购牛头数',
+  new_adult_cows decimal(38,10)  comment '新购成母牛头数',
+  new_reserve_cows decimal(38,10)  comment '新购后备牛头数',
+  report_date bigint comment '报告时间',
+  report_month bigint comment '报告月份',
+  farm_name string comment '牛场名称',
+  big_area_name string comment '大区名',
+  area_name string comment '区域名',
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  
+  
+  DROP TABLE IF EXISTS BIGDATA_DM.PJ_BUY_COW_TABLE;
+CREATE TABLE BIGDATA_DM.PJ_BUY_COW_TABLE(
+
+  
+  new_cows decimal(38,10)  comment '牛只个数',
+   grow_stat  string comment '牛只类别',
+  report_date bigint comment '报告时间',
+  report_month bigint comment '报告月份',
+  
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+  

@@ -1,0 +1,186 @@
+﻿---- 牧场牛只日产奶量
+--
+--
+----
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_DAIRY_COW_YIELD_INFO ;
+CREATE TABLE  BIGDATA_DW . W_DAIRY_COW_YIELD_INFO (
+    
+   ear_no  string comment '耳号',
+   milk_daily_yield  decimal(38,10) comment '日产奶量',
+   cows_count  decimal(38,10) comment '泌乳牛数',
+   milk_type  string  comment '产量类别',
+   less15_cows  decimal(38,10) comment '少于15kg牛数',
+   less25_cows  decimal(38,10) comment '15-25kg牛数',
+   less35_cows  decimal(38,10) comment '25-35kg牛数',
+   more35_cows  decimal(38,10) comment '大于35kg牛数',
+-- 平均奶量只能统计月度平均
+   report_date  bigint  comment '报告时间/挤奶日期',
+   report_month  bigint  comment '报告月份/挤奶月份',
+   farm_id       string comment '牛场Id',
+   farm_code      string comment '牛场编号',
+   farm_name      string comment '牛场名称',
+   big_area_id     string comment '大区ID',
+   big_area_code   string comment '大区编号',
+   big_area_name   string comment '大区名',
+   area_id         string comment '区域ID',
+   area_code        string comment '区域编号',
+   area_name       string comment '区域名',
+   cities_id       string comment '城市群ID',
+   cities_code     string comment '城市群编号',
+   cities_name     string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+  
+
+---- 牧场牛只日产奶量
+--
+--
+----日报折线图
+
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_DAIRY_COW_YIELD_INFO ;
+CREATE TABLE BIGDATA_DM. PJ_DAIRY_COW_YIELD_INFO (
+ 
+   cows_count  decimal(38,10) comment '泌乳牛数',
+   less15_cows  decimal(38,10) comment '少于15kg牛数',
+   less25_cows  decimal(38,10) comment '15-25kg牛数',
+   less35_cows  decimal(38,10) comment '25-35kg牛数',
+   more35_cows  decimal(38,10) comment '大于35kg牛数',
+   report_date  bigint  comment '报告时间/挤奶日期',
+   report_month  bigint  comment '报告月份/挤奶月份',
+   farm_id  string comment '牛场Id',
+   farm_code  string comment '牛场编号',
+   farm_name  string comment '牛场名称',
+   big_area_id  string comment '大区ID',
+   big_area_code  string comment '大区编号',
+   big_area_name  string comment '大区名',
+   area_id  string comment '区域ID',
+   area_code  string comment '区域编号',
+   area_name  string comment '区域名',
+   cities_id  string comment '城市群ID',
+   cities_code  string comment '城市群编号',
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+  
+
+
+
+  
+---- 牧场牛只日产奶量
+--
+--日报饼图
+----
+
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_DAIRY_COW_YIELD_TABLE ;
+CREATE TABLE  BIGDATA_DM . PJ_DAIRY_COW_YIELD_TABLE (
+   cows_total  decimal(38,10) comment '总泌乳牛数',
+   cows_count  decimal(38,10) comment '牛数',
+   milk_type  string comment '产量类别',
+
+ 
+   report_date  bigint  comment '报告时间/挤奶日期',
+   report_month  bigint  comment '报告月份/挤奶月份',
+
+   farm_name  string comment '牛场名称',
+
+   big_area_name  string comment '大区名',
+
+   area_name  string comment '区域名',
+
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+
+
+
+
+
+---- 牧场牛产奶量分析月报数据
+--
+--月报折线图
+----
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_MONTH_COW_YIELD_INFO ;
+CREATE TABLE  BIGDATA_DW . W_MONTH_COW_YIELD_INFO (
+    
+   ear_no  string comment '耳号',
+   milk_daily_yield  decimal(38,10) comment '日产奶量',
+   cows_count  decimal(38,10) comment '泌乳牛数',
+   milk_type  string  comment '产量类别',
+   less15_cows  decimal(38,10) comment '少于15kg牛数',
+   less25_cows  decimal(38,10) comment '15-25kg牛数',
+   less35_cows  decimal(38,10) comment '25-35kg牛数',
+   more35_cows  decimal(38,10) comment '大于35kg牛数',
+-- 平均奶量只能统计月度平均
+--   report_date  bigint  comment '报告时间/挤奶日期',
+   report_month  bigint  comment '报告月份/挤奶月份',
+   farm_id       string comment '牛场Id',
+   farm_code      string comment '牛场编号',
+   farm_name      string comment '牛场名称',
+   big_area_id     string comment '大区ID',
+   big_area_code   string comment '大区编号',
+   big_area_name   string comment '大区名',
+   area_id         string comment '区域ID',
+   area_code        string comment '区域编号',
+   area_name       string comment '区域名',
+   cities_id       string comment '城市群ID',
+   cities_code     string comment '城市群编号',
+   cities_name     string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+  
+
+
+  
+
+
+
+  
+---- 牧场牛只产奶量月报饼图
+--
+--
+----
+
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_MONTH_COW_YIELD_TABLE ;
+CREATE TABLE  BIGDATA_DM . PJ_MONTH_COW_YIELD_TABLE (
+   cows_total  decimal(38,10) comment '总泌乳牛数',
+   cows_count  decimal(38,10) comment '牛数',
+   milk_type  string comment '产量类别',
+
+ 
+   report_date  bigint  comment '报告时间/挤奶日期',
+   report_month  bigint  comment '报告月份/挤奶月份',
+
+   farm_name  string comment '牛场名称',
+
+   big_area_name  string comment '大区名',
+
+   area_name  string comment '区域名',
+
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;

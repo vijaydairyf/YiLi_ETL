@@ -1,0 +1,82 @@
+﻿
+   drop table if exists BIGDATA_DW.W_COW_BREEDING_INDEX_INFO;
+CREATE TABLE BIGDATA_DW.W_COW_BREEDING_INDEX_INFO(
+
+cows bigint comment '牛数',
+cows_period bigint comment '同期牛数',
+index_days bigint comment '天数',
+index_days_period bigint comment '同期天数',
+
+
+data_type string comment '数据类型：产犊间隔，配准天数，首配天数，怀孕天数，空怀天数',
+report_date string comment '产犊日期/确认怀孕日期/配种日期/确认怀孕日期/数据日期',
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+  
+
+  
+
+
+
+  
+  
+  
+  1产犊间隔，2配准天数，3首配天数，4怀孕天数，5空怀天数',
+  
+  
+   drop table if exists BIGDATA_DM.PJ_COW_BREEDING_INDEX_INFO;
+CREATE TABLE BIGDATA_DM.PJ_COW_BREEDING_INDEX_INFO(
+
+
+
+ hybrid_cow_count decimal(38,10) comment '配准牛只数量',
+ first_cow_count decimal(38,10) comment '首配牛只数量',
+ no_fetation_cow_count decimal(38,10) comment '空怀牛只数量',
+ calving_cow_count decimal(38,10) comment '产犊牛只数量',
+ fetation_cow_count decimal(38,10) comment '怀孕牛只数量',
+ 
+ hybrid_cow_count_period decimal(38,10) comment '同期配准牛只数量',
+ first_cow_count_period decimal(38,10) comment '同期首配牛只数量',
+ no_fetation_cow_count_period decimal(38,10) comment '同期空怀牛只数量',
+ calving_cow_count_period decimal(38,10) comment '同期产犊牛只数量',
+ fetation_cow_count_period decimal(38,10) comment '同期怀孕牛只数量',
+ 
+ hybrid_days  decimal(38,10) comment '配准天数',
+ hybrid_days_period decimal(38,10) comment '同期配准天数',
+ first_hybrid_days decimal(38,10) comment '首配天数',
+ first_hybrid_days_period decimal(38,10) comment '同期首配天数',
+ no_fetation_days decimal(38,10) comment '空怀天数',
+ no_fetation_days_period decimal(38,10) comment '同期空怀天数',
+ calving_days decimal(38,10) comment '产犊间隔',
+ calving_days_period decimal(38,10) comment '同期产犊间隔',
+ fetation_days decimal(38,10) comment '怀孕天数',
+ fetation_days_period decimal(38,10) comment '同期怀孕天数',
+ report_date  bigint comment '数据日期',
+ report_month  bigint comment '数据月份',
+
+
+  farm_name string comment '牛场名称',
+
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+  
+ 

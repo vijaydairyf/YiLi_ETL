@@ -1,0 +1,236 @@
+﻿
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_FEED_ANALYSIS_INFO ;
+CREATE TABLE  BIGDATA_DW.W_FEED_ANALYSIS_INFO (
+
+   fodder_cost  decimal(38,10) comment '饲料用量',
+   fodder_lost  decimal(38,10) comment '饲料剩余量',
+   actual_eat  decimal(38,10) comment '饲料采食量',
+   group_price  decimal(38,10) comment '饲养成本',
+   
+   fodder_cost_period  decimal(38,10) comment '同期饲料用量',
+   fodder_lost_period  decimal(38,10) comment '同期饲料剩余量',
+   actual_eat_period  decimal(38,10) comment  '同期饲料采食量',
+   group_price_period  decimal(38,10) comment '同期原料成本',
+   total_milk  decimal(38,10)  comment '产奶量',
+   total_milk_period  decimal(38,10)  comment '同期产奶量',  
+   cows_count  decimal(38,10)  comment '牛头数', 
+   cows_count_period  decimal(38,10)  comment '同期牛头数', 
+   group_type  string comment '分群类型',
+
+   dry_milk_price decimal(38,10) comment '干奶牛饲料成本',
+   perin_cows_price   decimal(38,10) comment '围产牛饲料成本',
+   milk_cows_price  decimal(38,10) comment '泌乳牛饲料成本',
+   reserve_cows_price decimal(38,10) comment '后备牛饲料成本',
+   calf_price decimal(38,10) comment '犊牛饲料成本',
+   dry_milk_eat  decimal(38,10) comment '干奶牛采食量',
+   perin_cows_eat  decimal(38,10)  comment '围产牛采食量',
+   milk_cows_eat  decimal(38,10) comment '泌乳牛采食量',
+   reserve_cows_eat  decimal(38,10) comment '后备牛采食量',
+   calf_eat  decimal(38,10) comment '犊牛采食量',
+   dry_milk_price_period decimal(38,10) comment '同期干奶牛饲料成本',
+   perin_cows_price_period   decimal(38,10) comment '同期围产牛饲料成本',
+   milk_cows_price_period  decimal(38,10) comment '同期泌乳牛饲料成本',
+   reserve_cows_price_period decimal(38,10) comment '同期后备牛饲料成本',
+   calf_price_period decimal(38,10) comment '同期犊牛饲料成本',
+   dry_milk_eat_period  decimal(38,10) comment '同期干奶牛采食量',
+   perin_cows_eat_period  decimal(38,10)  comment '同期围产牛采食量',
+   milk_cows_eat_period  decimal(38,10) comment '同期泌乳牛采食量',
+   reserve_cows_eat_period  decimal(38,10) comment '同期后备牛采食量',
+   calf_eat_period  decimal(38,10) comment '同期犊牛采食量',
+   
+   milk_price  decimal(38,10) comment '公斤奶成本',
+   milk_price_period  decimal(38,10) comment '同期公斤奶成本',
+   atype_milk_price  decimal(38,10) comment 'A类型公斤奶成本',
+   btype_milk_price  decimal(38,10) comment 'B类型公斤奶成本',
+   ctype_milk_price  decimal(38,10) comment 'C类型公斤奶成本',
+   dtype_milk_price  decimal(38,10) comment 'D类型公斤奶成本',
+   
+   atype_milk_price_period  decimal(38,10) comment '同期A类型公斤奶成本',
+   btype_milk_price_period  decimal(38,10) comment '同期B类型公斤奶成本',
+   ctype_milk_price_period  decimal(38,10) comment '同期C类型公斤奶成本',
+   dtype_milk_price_period  decimal(38,10) comment '同期D类型公斤奶成本',
+   
+   
+   dry_cows decimal(38,10)  comment '干奶牛头数',
+   locating_cows decimal(38,10)  comment '泌乳牛头数',
+   reserve_cows decimal(38,10)  comment '后备牛头数',
+   calf decimal(38,10)  comment '犊牛数',
+   dry_cows_period decimal(38,10)  comment '同期干奶牛头数',
+   locating_cows_period decimal(38,10)  comment '泌乳牛头数',   
+   reserve_cows_period decimal(38,10)  comment '同期后备牛',
+   calf_period decimal(38,10)  comment '同期犊牛数',
+
+   farm_type  string comment '模式等级（ABCD，大型）',
+   report_date  string  comment '报告时间/搅拌时间',
+   farm_code  string comment '牛场名称',
+   farm_name  string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name  string comment '区域名',
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+
+  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FEED_ANALYSIS_INFO ;
+CREATE TABLE  BIGDATA_DM.PJ_FEED_ANALYSIS_INFO (
+
+   fodder_cost  decimal(38,10) comment '饲料用量',
+   fodder_lost  decimal(38,10) comment '饲料剩余量',
+   actual_eat  decimal(38,10) comment '饲料采食量',
+   group_price  decimal(38,10) comment '饲养成本',
+   
+   fodder_cost_period  decimal(38,10) comment '同期饲料用量',
+   fodder_lost_period  decimal(38,10) comment '同期饲料剩余量',
+   actual_eat_period  decimal(38,10) comment  '同期饲料采食量',
+   group_price_period  decimal(38,10) comment '同期原料成本',
+   total_milk  decimal(38,10)  comment '产奶量',
+   total_milk_period  decimal(38,10)  comment '同期产奶量',  
+   cows_count  decimal(38,10)  comment '牛头数', 
+   cows_count_period  decimal(38,10)  comment '同期牛头数', 
+   group_type  string comment '分群类型',
+
+   dry_milk_price decimal(38,10) comment '干奶牛饲料成本',
+   perin_cows_price   decimal(38,10) comment '围产牛饲料成本',
+   milk_cows_price  decimal(38,10) comment '泌乳牛饲料成本',
+   reserve_cows_price decimal(38,10) comment '后备牛饲料成本',
+   calf_price decimal(38,10) comment '犊牛饲料成本',
+   dry_milk_eat  decimal(38,10) comment '干奶牛采食量',
+   perin_cows_eat  decimal(38,10)  comment '围产牛采食量',
+   milk_cows_eat  decimal(38,10) comment '泌乳牛采食量',
+   reserve_cows_eat  decimal(38,10) comment '后备牛采食量',
+   calf_eat  decimal(38,10) comment '犊牛采食量',
+   dry_milk_price_period decimal(38,10) comment '同期干奶牛饲料成本',
+   perin_cows_price_period   decimal(38,10) comment '同期围产牛饲料成本',
+   milk_cows_price_period  decimal(38,10) comment '同期泌乳牛饲料成本',
+   reserve_cows_price_period decimal(38,10) comment '同期后备牛饲料成本',
+   calf_price_period decimal(38,10) comment '同期犊牛饲料成本',
+   dry_milk_eat_period  decimal(38,10) comment '同期干奶牛采食量',
+   perin_cows_eat_period  decimal(38,10)  comment '同期围产牛采食量',
+   milk_cows_eat_period  decimal(38,10) comment '同期泌乳牛采食量',
+   reserve_cows_eat_period  decimal(38,10) comment '同期后备牛采食量',
+   calf_eat_period  decimal(38,10) comment '同期犊牛采食量',
+   
+   milk_price  decimal(38,10) comment '公斤奶成本',
+   milk_price_period  decimal(38,10) comment '同期公斤奶成本',
+   atype_milk_price  decimal(38,10) comment 'A类型公斤奶成本',
+   btype_milk_price  decimal(38,10) comment 'B类型公斤奶成本',
+   ctype_milk_price  decimal(38,10) comment 'C类型公斤奶成本',
+   dtype_milk_price  decimal(38,10) comment 'D类型公斤奶成本',
+   
+   atype_milk_price_period  decimal(38,10) comment '同期A类型公斤奶成本',
+   btype_milk_price_period  decimal(38,10) comment '同期B类型公斤奶成本',
+   ctype_milk_price_period  decimal(38,10) comment '同期C类型公斤奶成本',
+   dtype_milk_price_period  decimal(38,10) comment '同期D类型公斤奶成本',
+   
+   
+   dry_cows decimal(38,10)  comment '干奶牛头数',
+   locating_cows decimal(38,10)  comment '泌乳牛头数',
+   reserve_cows decimal(38,10)  comment '后备牛头数',
+   calf decimal(38,10)  comment '犊牛数',
+   dry_cows_period decimal(38,10)  comment '同期干奶牛头数',
+   locating_cows_period decimal(38,10)  comment '泌乳牛头数',   
+   reserve_cows_period decimal(38,10)  comment '同期后备牛',
+   calf_period decimal(38,10)  comment '同期犊牛数',
+
+   farm_type  string comment '模式等级（ABCD，大型）',
+   report_date  bigint  comment '报告时间/搅拌时间',
+   report_month  bigint  comment '报告时间/搅拌时间',
+   farm_code  string comment '牛场名称',
+   farm_name  string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name  string comment '区域名',
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  -- 饲喂分析 柱状图建表语句  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FEED_ANALYSIS_TABLE ;
+CREATE TABLE  BIGDATA_DM.PJ_FEED_ANALYSIS_TABLE (
+   fodder_cost  decimal(38,10) comment '饲料用量',
+   fodder_lost  decimal(38,10) comment '饲料剩余量',
+   actual_eat  decimal(38,10) comment '饲料采食量',
+   group_price  decimal(38,10) comment '饲养成本',
+   
+   fodder_cost_period  decimal(38,10) comment '同期饲料用量',
+   fodder_lost_period  decimal(38,10) comment '同期饲料剩余量',
+   actual_eat_period  decimal(38,10) comment  '同期饲料采食量',
+   group_price_period  decimal(38,10) comment '同期饲养成本',
+   total_milk  decimal(38,10)  comment '产奶量',
+   total_milk_period  decimal(38,10)  comment '同期产奶量',  
+   cows_count  decimal(38,10)  comment '牛头数', 
+   cows_count_period  decimal(38,10)  comment '同期牛头数', 
+   group_type  string comment '分群类型',
+   order_column bigint comment '分群排序',
+   farm_type    string comment '模式等级（ABCD，大型）',
+   report_date  bigint  comment '报告时间/搅拌时间',
+   report_month  bigint  comment '报告月份',
+   farm_code    string comment '牛场名称',
+   farm_name     string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name     string comment '区域名',
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;
+
+
+
+
+
+-- 饲料用量 和 偏差柱图 
+
+
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FEED_ACTUAL_ERROR ;
+CREATE TABLE  BIGDATA_DM.PJ_FEED_ACTUAL_ERROR (
+   fodder_cost  decimal(38,10) comment '饲料计划用量',
+   fodder_lost  decimal(38,10) comment '饲料实际用量',
+   actual_eat  decimal(38,10) comment '混合误差',
+   group_type  string comment '分群类型',
+   order_column bigint comment '分群排序',
+   report_date  bigint  comment '报告时间/搅拌时间',
+   report_month  bigint  comment '报告月份',
+   farm_code    string comment '牛场名称',
+   farm_name     string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name     string comment '区域名',
+   cities_name  string comment '城市名'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;

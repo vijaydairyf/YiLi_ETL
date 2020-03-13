@@ -1,0 +1,70 @@
+﻿
+ --- 繁殖率 数据仓库表 
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_FEEDING_RATE_INFO;
+CREATE TABLE BIGDATA_DW.W_FEEDING_RATE_INFO(
+cow_id string comment '牛只id',
+ear_no string comment '牛耳号',
+
+grow_stat string comment'牛只类别',
+lactation_cnt string comment'牛只胎次',
+breed_youth_cows decimal(38,10) comment '繁殖青年牛牛数',
+breed_adult_cows decimal(38,10) comment '繁殖成母牛数',
+breed_cows decimal(38,10) comment '繁殖牛数',
+report_date string comment'报告时间',
+report_month string comment'报告月份',
+report_year string comment'报告年份',
+farm_name  string comment '牛场'
+,big_area_name string comment '大区'
+,area_name string comment '区域I'
+,cities_name  string comment '地区'
+
+)
+  PARTITIONED BY ( 
+  date_ string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC; 
+
+
+
+
+
+
+
+ --- 繁殖率 数据集市表 
+
+
+DROP TABLE IF EXISTS BIGDATA_DM.PJ_FEEDING_RATE_INFO;
+CREATE TABLE BIGDATA_DM.PJ_FEEDING_RATE_INFO(
+
+
+
+breed_youth_cows decimal(38,10)  comment '繁殖青年牛牛数',
+breed_adult_cows decimal(38,10)  comment '繁殖成母牛数',
+breed_cows decimal(38,10)  comment '繁殖牛数',
+breed_youth_cows_period decimal(38,10) comment '同期繁殖青年牛牛数',
+breed_adult_cows_period decimal(38,10) comment '同期繁殖成母牛数',
+breed_cows_period decimal(38,10) comment '同期繁殖牛数',
+
+
+
+report_month bigint  comment'报告时间 -月度数据',
+report_year bigint  comment'报告年份',
+
+  farm_name string comment '牧场名',
+  big_area_name string comment '大区名',
+
+  area_name string comment '区域名',
+
+  cities_name string comment '城市名'
+
+)
+  
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC; 
+  
+  
+  

@@ -1,0 +1,21 @@
+
+drop table if exists bigdata_dw.`w_month_days_info`;
+CREATE TABLE `bigdata_dw`.`w_month_days_info`(
+
+  `year` string comment '年',
+  `year_code` string comment '年编号',
+  `month` string comment '月',
+  `month_code` string comment '月编号',
+  `day` string comment '日',
+  `day_code` string comment '日编号',
+  `year_num` string comment '年数',
+  `month_num` string comment '月数',
+  `day_num` string comment '日数'
+ )
+ 
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' ;
+
+ insert overwrite table bigdata_dw.`w_month_days_info`
+  select year_nm,year_code,month_nm,month_code,day_nm,day_code,year_num,month_num,day_num from bigdata_dw.W_DATE_D  where day_nm <> 'null';

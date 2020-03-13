@@ -1,0 +1,23 @@
+﻿
+---判断筛选固定站时间表
+--
+---
+-- 
+
+
+  DROP TABLE IF EXISTS BIGDATA_DM.`PJ_FIX_FARM_INFO`;
+CREATE TABLE `BIGDATA_DM`.`PJ_FIX_FARM_INFO`(
+ 
+  `farm_code` string comment '牛场编号',
+  `fix_month` string comment '固定站月份',  
+
+
+  `data_time` string comment '数据插入时间'
+ )
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   
+  stored as ORC;
+
+ 

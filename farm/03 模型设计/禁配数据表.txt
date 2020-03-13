@@ -1,0 +1,112 @@
+---- 繁殖率 禁配牛只数据统计
+--
+----
+
+---- 禁配数据建表
+-- 根据 cow_id ，farm_id 作为联合主键确认一只牛
+---- 某一只牛在某一个月可能有多次禁配和多次解禁 
+---- 数据查询细化到天
+
+   drop table if exists BIGDATA_DM.PJ_COW_FORBID_INFO;
+CREATE TABLE BIGDATA_DM.PJ_COW_FORBID_INFO(
+ear_no string comment '牛号',
+growth_stat string comment '牛只类别',
+forbid_dt bigint comment '禁配时间',
+cancel_forbid_dt bigint comment '解禁时间',
+  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号',
+  farm_name string comment '牛场名称',
+  big_area_id string comment '大区ID',
+  big_area_code string comment '大区编号',
+  big_area_name string comment '大区名',
+  area_id string comment '区域ID',
+  area_code string comment '区域编号',
+  area_name string comment '区域名',
+  cities_id string comment '城市群ID',
+  cities_code string comment '城市群编号',
+  cities_name string comment '城市名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+
+
+
+insert overwrite table BIGDATA_DM.PJ_COW_FORBID_INFO 
+
+  select t1.cow_id
+  ,t1.grow_stat AS growth_stat
+  ,cast(regexp_replace(substr(t1.forbid_dt,1,10),'-','') as bigint ) as forbid_dt
+  ,cast(regexp_replace(substr(t2.cancelforbiddate,1,10),'-','') as bigint ) as cancel_forbid_dt
+
+,t3.farm_id as farm_id
+,t3.farm_code  as farm_code
+,t3.farm_name as farm_name
+,t3.farm_org_id2 as big_area_id
+,t3.farm_org_code2 as big_area_code
+,t3.farm_org_name2 as big_area_name
+,t3.farm_org_id3 as area_id
+,t3.farm_org_code3 as area_code
+,t3.farm_org_name3 as area_name
+,t3.farm_org4_id as cities_id
+,t3.farm_org_code4 as cities_code
+,t3.farm_org_name4 as cities_name
+,to_date(current_date) as  date_
+  
+  from 
+(
+select cow_id,farm_id,grow_stat,forbid_dt,Row_Number() OVER (partition by cow_id,farm_id ORDER BY forbid_dt asc) rank 
+from data_lake.d_evt_dairy_cow_forbid 
+) t1  left join 
+(select cow_id,farm_id,data_growstatus,data_forbiddate,cancelforbiddate,Row_Number() OVER (partition by cow_id,farm_id ORDER BY cancelforbiddate asc) rank 
+from data_lake.d_evt_dairy_cow_cancel_forbid   
+) t2 on t1.cow_id = t2.cow_id and t1.farm_id = t2.farm_id  and t1.rank = t2.rank
+left join data_lake.d_pty_farm_base t3 on t2.farm_id = t3.farm_id 
+where t1.cow_id is  not null 
+;
+
+
+
+
+---- 繁殖率 禁配牛只数据统计
+--
+----
+
+---- 禁配数据建表  数据进入数据集市的数据 单月，或者解禁时间 是否需要进行去重操作
+-- 根据 cow_id ，farm_id 作为联合主键确认一只牛
+---- 某一只牛在某一个月可能有多次禁配和多次解禁 
+---- 数据查询细化到天
+
+   drop table if exists BIGDATA_DM.PJ_COW_FORBID_INFO ;
+CREATE TABLE BIGDATA_DM.PJ_COW_FORBID_INFO(
+cow_id string comment '牛号',
+growth_stat string comment '牛只类别',
+forbid_dt string comment '禁配时间',
+cancel_forbid_dt string comment '解禁时间',
+  farm_id string comment '牛场Id',
+  farm_code string comment '牛场编号',
+  farm_name string comment '牛场名称',
+  big_area_id string comment '大区ID',
+  big_area_code string comment '大区编号',
+  big_area_name string comment '大区名',
+  area_id string comment '区域ID',
+  area_code string comment '区域编号',
+  area_name string comment '区域名',
+  cities_id string comment '城市群ID',
+  cities_code string comment '城市群编号',
+  cities_name string comment '城市名'
+ )                                         
+  PARTITIONED BY ( 
+  date_ string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;
+
+
+
+
+
+
+
+

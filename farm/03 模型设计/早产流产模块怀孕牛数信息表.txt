@@ -1,0 +1,110 @@
+﻿  
+   -- 早产率 流产率 怀孕牛只信息表  
+  
+DROP TABLE IF EXISTS BIGDATA_DW.`W_FETATION_COWS_INFO`;
+CREATE TABLE BIGDATA_DW.`W_FETATION_COWS_INFO`(
+
+`cow_id` string comment '牛只id',
+`lactation_cnt` string comment '胎次',
+`grow_stat` string comment '牛只类型',
+`report_date` string comment'报告时间',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+)
+  PARTITIONED BY ( 
+  `date_` string)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC;
+
+
+
+   -- 早产率 流产率 怀孕牛只信息表  
+  
+DROP TABLE IF EXISTS BIGDATA_DM.`PJ_FETATION_COWS_INFO`;
+CREATE TABLE BIGDATA_DM.`PJ_FETATION_COWS_INFO`(
+
+`cow_id` string comment '牛只id',
+`lactation_cnt` string comment '胎次',
+`grow_stat` string comment '牛只类型',
+`report_date` string comment'怀孕时间',
+`report_month` string comment'怀孕月份',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC;
+
+
+
+DROP TABLE IF EXISTS BIGDATA_DM.`PJ_FETATION_COWS_INFO1`;
+CREATE TABLE BIGDATA_DM.`PJ_FETATION_COWS_INFO1`(
+
+`fetation_cows` bigint comment '怀孕牛数',
+`0parity_fetation_cows` bigint comment '青年牛怀孕牛数',
+`1parity_fetation_cows` bigint comment '一胎怀孕牛数',
+`2parity_fetation_cows` bigint comment '二胎怀孕牛数',
+`3parity_fetation_cows` bigint comment '三胎怀孕牛数',
+`4parity_fetation_cows` bigint comment '四胎怀孕牛数',
+`5parity_fetation_cows` bigint comment '五胎及以上怀孕牛数',
+`1parity_fetation_cows` bigint comment '一胎怀孕牛数',
+`43days_fetation_cows` bigint comment '43-62天怀孕牛数',
+`63days_fetation_cows` bigint comment '63-82天怀孕牛数',
+`83days_fetation_cows` bigint comment '83-102天怀孕牛数',
+`103days_fetation_cows` bigint comment '103-122天怀孕牛数',
+`123days_fetation_cows` bigint comment '123-142天怀孕牛数',
+`143days_fetation_cows` bigint comment '143-162天怀孕牛数',
+`163days_fetation_cows` bigint comment '163-182天怀孕牛数',
+`183days_fetation_cows` bigint comment '183-201天怀孕牛数',
+`210days_fetation_cows` bigint comment '210-219天怀孕牛数',
+`220days_fetation_cows` bigint comment '220-229天怀孕牛数',
+`230days_fetation_cows` bigint comment '230-239天怀孕牛数',
+`240days_fetation_cows` bigint comment '240-249天怀孕牛数',
+`250days_fetation_cows` bigint comment '250-262天怀孕牛数',
+
+`report_date` bigint comment'报告时间',
+`report_month` bigint comment'报告月份',
+  `farm_id` string comment '牛场Id',
+  `farm_code` string comment '牛场编号',
+  `farm_name` string comment '牛场名称',
+  `big_area_id` string comment '大区ID',
+  `big_area_code` string comment '大区编号',
+  `big_area_name` string comment '大区名',
+  `area_id` string comment '区域ID',
+  `area_code` string comment '区域编号',
+  `area_name` string comment '区域名',
+  `cities_id` string comment '城市群ID',
+  `cities_code` string comment '城市群编号',
+  `cities_name` string comment '城市名'
+)
+  PARTITIONED BY ( 
+  `date_` string)
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n'   stored as ORC;
+  
+  

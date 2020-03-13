@@ -1,0 +1,25 @@
+
+-----  首页区域维度数据信息表
+---
+---
+----
+
+
+  drop table if exists BIGDATA_DW.W_AREA_INFO;
+CREATE TABLE BIGDATA_DW.W_AREA_INFO(
+
+farm_count bigint comment '牧场个数'
+,big_area_id  string comment '大区ID'
+,big_area_code  string comment '大区编号'
+,big_area_name string comment '大区'
+,area_id  string comment '区域ID'
+,area_code  string comment '区域编号'
+,area_name string comment '区域名称'
+,cities_id  string comment '地区ID'
+,cities_code  string comment '地区编号'
+,cities_name  string comment '地区名'
+ )                                         
+
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' stored as ORC;

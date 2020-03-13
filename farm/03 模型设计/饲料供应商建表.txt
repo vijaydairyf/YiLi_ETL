@@ -1,0 +1,91 @@
+
+
+
+DROP TABLE IF EXISTS BIGDATA_DW.W_FODDER_SUPPLIER_INFO ;
+CREATE TABLE  BIGDATA_DW.W_FODDER_SUPPLIER_INFO (
+
+   supplier_name  decimal(38,10) comment '供应商名',
+   enter_qty  decimal(38,10) comment '入库数量',
+   cal_price  string comment '单价',
+   goods_spec  string comment '规格',
+   goods_unit  string comment '单位',
+   agrq_supplier  decimal(38,10) comment  '爱阁瑞奇(开封)饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '包头九州大地生物技术有限公司',
+   agrq_supplier  decimal(38,10) comment  '包头市北辰生物技术有限公司',
+   agrq_supplier  decimal(38,10) comment  '保定伟昌加工饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '保定伊和生物科技有限责任公司',
+   agrq_supplier  decimal(38,10) comment  '北京科兴大地饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '北京三元禾丰饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '北京三元种业科技股份饲料有限公司饲料分公司',
+   agrq_supplier  decimal(38,10) comment  '北京新希望农牧科技有限公司',
+   agrq_supplier  decimal(38,10) comment  '北京正大饲料饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '成都同乐饲料科技有限公司',
+   agrq_supplier  decimal(38,10) comment  '大成永康营养技术(天津)有限公司',
+   agrq_supplier  decimal(38,10) comment  '德州康惠饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '杜尔伯特牧泉元兴饲料有限责任公司',
+   agrq_supplier  decimal(38,10) comment  '公主岭禾丰反刍饲料有限责任公司',
+   agrq_supplier  decimal(38,10) comment  '光明牧业有限公司河北分公司',
+   agrq_supplier  decimal(38,10) comment  '河北杰威大富农饲料有限公司',
+   
+   agrq_supplier  decimal(38,10) comment  '河北凯瑞达饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '河北坤元饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '河北新希望饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '河北东方正大有限公司洛阳饲料厂',
+   agrq_supplier  decimal(38,10) comment  '河南全赫饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '河南中荷云星饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '黑龙江禾丰牧业有限公司',
+
+   agrq_supplier  decimal(38,10) comment  '嘉吉动物营养（郑州）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（成都）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（吉林）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（内蒙古）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（陕西）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（新疆）有限公司',
+   agrq_supplier  decimal(38,10) comment  '嘉吉饲料（长沙）有限公司汉川分公司',
+   agrq_supplier  decimal(38,10) comment  '江苏家惠生物科技有限公司',
+   agrq_supplier  decimal(38,10) comment  '焦作禾丰饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '焦作禾丰饲料有限公司（元兴代加工）',  
+   agrq_supplier  decimal(38,10) comment  '河北东方正大有限公司洛阳饲料厂',
+   agrq_supplier  decimal(38,10) comment  '河南全赫饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '河南中荷云星饲料有限公司',
+   agrq_supplier  decimal(38,10) comment  '黑龙江禾丰牧业有限公司',
+   report_date  string  comment '报告时间/搅拌时间',
+   farm_code  string comment '牛场名称',
+   farm_name  string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name  string comment '区域名',
+   cities_name  string comment '城市名'
+   
+    )
+  PARTITIONED BY ( 
+   date_  string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
+  
+  
+  
+  --- 供应商柱状图 
+  
+DROP TABLE IF EXISTS BIGDATA_DW.W_FODDER_SUPPLIER_INFO ;
+CREATE TABLE  BIGDATA_DW.W_FODDER_SUPPLIER_INFO (
+
+   supplier_name  decimal(38,10) comment '供应商名',
+   in_inv_amt  string comment '入库金额',
+ 
+
+   report_date  string  comment '报告时间/入库日期',
+   farm_code  string comment '牛场名称',
+   farm_name  string comment '牛场名称',
+   big_area_name  string comment '大区名',
+   area_name  string comment '区域名',
+   cities_name  string comment '城市名'
+   
+    )
+  PARTITIONED BY ( 
+   date_  string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\u0001' 
+  LINES TERMINATED BY '\n' 
+  stored as ORC;
