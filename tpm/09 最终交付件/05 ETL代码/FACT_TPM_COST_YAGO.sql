@@ -1,0 +1,140 @@
+
+--逻辑语句
+insert overwrite table bigdata_dm.fact_tpm_cost_yago
+select
+bg_wid,
+bg_name,
+bug_month,
+area_name,
+region_name,
+camp_type_name,
+exp_subj_name,
+function_type_name,
+exp_from_name,
+dep_name,
+dealer_id,
+dealer_name,
+is_direct,
+system_name,
+sum(sales_cost) sales_cost,
+sum(zxje) zxje,
+sum(xzj) xzj,
+sum(cost_budget_year) cost_budget_year,
+sum(sales_cost_lm) sales_cost_lm,
+sum(zxje_lm) zxje_lm,
+sum(xzj_lm) xzj_lm,
+sum(cost_budget_year_lm) cost_budget_year_lm,
+sum(sales_cost_ly) sales_cost_ly,
+sum(zxje_ly) zxje_ly,
+sum(xzj_ly) xzj_ly,
+sum(cost_budget_year_ly) cost_budget_year_ly
+from 
+(
+select
+bg_wid,
+bg_name,
+bug_month,
+area_name,
+region_name,
+camp_type_name,
+exp_subj_name,
+function_type_name,
+exp_from_name,
+dep_name,
+dealer_id,
+dealer_name,
+is_direct,
+system_name,
+sales_cost,
+zxje,
+xzj,
+cost_budget_year,
+0.0 sales_cost_lm,
+0.0 zxje_lm,
+0.0 xzj_lm,
+0.0 cost_budget_year_lm,
+0.0 sales_cost_ly,
+0.0 zxje_ly,
+0.0 xzj_ly,
+0.0 cost_budget_year_ly
+from bigdata_dw.fact_tpm_cost_sum_tmp
+union all
+select
+bg_wid,
+bg_name,
+cast(date_format(add_months(concat_ws('-',substr(mago.bug_month,1,4),substr(mago.bug_month,5,2),'01'),1),'yyyyMM') as bigint) bug_month,
+area_name,
+region_name,
+camp_type_name,
+exp_subj_name,
+function_type_name,
+exp_from_name,
+dep_name,
+dealer_id,
+dealer_name,
+is_direct,
+system_name,
+0.0 sales_cost,
+0.0 zxje,
+0.0 xzj,
+0.0 cost_budget_year,
+sales_cost sales_cost_lm,
+zxje zxje_lm,
+xzj xzj_lm,
+cost_budget_year cost_budget_year_lm,
+0.0 sales_cost_ly,
+0.0 zxje_ly,
+0.0 xzj_ly,
+0.0 cost_budget_year_ly
+from bigdata_dw.fact_tpm_cost_sum_tmp mago
+where date_format(add_months(concat_ws('-',substr(mago.bug_month,1,4),substr(mago.bug_month,5,2),'01'),1),'yyyyMM')<=date_format(current_date,'yyyyMM')
+and mago.bug_month<=date_format(add_months(current_date,-1),'yyyyMM')
+union all
+select
+bg_wid,
+bg_name,
+cast(date_format(add_months(concat_ws('-',substr(yago.bug_month,1,4),substr(yago.bug_month,5,2),'01'),12),'yyyyMM') as bigint) bug_month,
+area_name,
+region_name,
+camp_type_name,
+exp_subj_name,
+function_type_name,
+exp_from_name,
+dep_name,
+dealer_id,
+dealer_name,
+is_direct,
+system_name,
+0.0 sales_cost,
+0.0 zxje,
+0.0 xzj,
+0.0 cost_budget_year,
+0.0 sales_cost_lm,
+0.0 zxje_lm,
+0.0 xzj_lm,
+0.0 cost_budget_year_lm,
+sales_cost sales_cost_ly,
+zxje zxje_ly,
+xzj xzj_ly,
+cost_budget_year cost_budget_year_ly
+from bigdata_dw.fact_tpm_cost_sum_tmp yago
+where date_format(add_months(concat_ws('-',substr(yago.bug_month,1,4),substr(yago.bug_month,5,2),'01'),12),'yyyyMM')<=date_format(current_date,'yyyyMM') 
+and yago.bug_month<=date_format(add_months(current_date,-12),'yyyyMM')
+) T
+group by 
+bg_wid,
+bg_name,
+bug_month,
+area_name,
+region_name,
+camp_type_name,
+exp_subj_name,
+function_type_name,
+exp_from_name,
+dep_name,
+dealer_id,
+dealer_name,
+is_direct,
+system_name
+;
+

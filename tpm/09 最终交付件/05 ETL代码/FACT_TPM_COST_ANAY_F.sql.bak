@@ -1,0 +1,85 @@
+
+--写入DM表
+INSERT overwrite TABLE bigdata_dm.fact_tpm_cost_anay_f PARTITION (bg_wid,date_)
+SELECT bg_wid
+    ,0 AS date_wid
+    ,0 AS area_wid
+    ,0 AS dealer_wid
+    ,0 AS channel_wid
+    ,0 AS active_type_wid
+    ,0 AS account_wid
+    ,bg_name
+    ,dep_name--部门
+    ,cast(regexp_replace(bug_month, '-', '') AS BIGINT) AS bug_month
+    ,function_type_name
+    ,'0' AS function_type_cd
+    ,area_name AS area_name
+    ,region_name AS region_name
+    ,'0' AS city_group
+    ,'0' AS channel_type
+    ,exp_subj_name
+    ,'0' AS exp_subj_id
+    ,camp_type_name
+    ,case when exp_from_name like '市场部%' then '市场部费用'
+          when exp_from_name like '销售部%' then '销售部费用'
+          else exp_from_name end as exp_from_name--费用出处
+    ,'0' AS camp_type_cd
+    ,dealer_name
+    ,dealer_id
+    ,'0' AS dealer_level
+    ,is_direct
+    ,before_disc_amt--折前收入
+    ,before_disc_amt_ly--折前收入同比 
+    ,after_disc_amt
+    ,sales_cost
+    ,sales_cost_ly
+    ,sales_cost_lm
+    ,cost_budget_year
+    ,before_disc_amt_ytd--折前收入年累计
+    ,before_disc_amt_ly_ytd --折前收入年累计同比
+    ,after_disc_amt_ytd
+    ,sales_cost_ytd
+    ,coalesce(lag(sales_cost_ytd,12) over (partition by bg_wid,bg_name,bug_month,area_name,region_name,camp_type_name,exp_subj_name,function_type_name,exp_from_name,dep_name,dealer_id,dealer_name,is_direct order by bug_month),0) as sales_cost_ly_ytd
+    ,cost_budget_year_ytd
+    ,task_amt_before--销售月度任务折前
+    ,task_amt_before_ytd    --销售月度任务折前年累计
+    ,task_amt_after
+    ,task_amt_after_ytd 
+    ,budget_amt_before
+    ,budget_amt_before_ytd
+    ,before_disc_amt_lm--折前收入环比
+    ,cost_budget_year_ly
+    ,coalesce(lag(cost_budget_year_ytd,12) over (partition by bg_wid,bg_name,bug_month,area_name,region_name,camp_type_name,exp_subj_name,function_type_name,exp_from_name,dep_name,dealer_id,dealer_name,is_direct order by bug_month),0) as cost_budget_year_ly_ytd
+    ,task_amt_before_ly
+    ,task_amt_before_ly_ytd
+    ,sales_cost_lly
+    ,cost_budget_year_lm
+    ,'' as re_attribute1
+    ,'' as re_attribute2
+    ,'' as re_attribute3
+    ,'' as re_attribute4
+    ,'' as re_attribute5
+    ,xzj as re_attribute6
+    ,xzj_ytd as re_attribute7
+    ,budget_amt_after as re_attribute8
+    ,budget_amt_after_ytd as re_attribute9
+    ,0 as re_attribute10
+    ,0 as re_attribute11
+    ,0 as re_attribute12
+    ,0 as re_attribute13
+    ,0 as re_attribute14
+    ,0 as re_attribute15
+    ,0 as re_attribute16
+    ,0 as re_attribute17
+    ,0 as re_attribute18
+    ,0 as re_attribute19
+    ,0 as re_attribute20
+    ,0 as re_attribute21
+    ,0 as re_attribute22
+    ,0 as re_attribute23
+    ,0 as re_attribute24
+    ,CURRENT_DATE insert_date
+    ,bg_wid AS bg_wid
+    ,CONCAT(regexp_replace(bug_month, '-', ''),'01') AS date_
+FROM bigdata_dw.fact_tpm_cost_a_tmp;
+
