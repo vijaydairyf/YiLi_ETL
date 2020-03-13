@@ -1,0 +1,22 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+
+sqoop import \
+--connect 'jdbc:oracle:thin:@(DESCRIPTION= (ADDRESS_LIST=(LOAD_BALANCE=YES)(FAILOVER=YES)(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.171)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.172)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.173)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.174)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=PROD1)))' \
+--username 'BIGDATA_PROD' \
+--password 'yzbigdatasxcg' \
+--query "select 
+lookup_code,
+meaning,
+description,
+enabled_flag,
+start_date_active,
+end_date_active,
+last_update_date
+from apps.FND_LOOKUP_VALUES 
+where LOOKUP_TYPE = 'DEMAND_CLASS' and LANGUAGE = 'ZHS' and \$CONDITIONS" -m 1 \
+--delete-target-dir \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--target-dir /apps/hive/warehouse/bigdata_dw.db/dm_sl_request_type_ds -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=dm_sl_request_type_ds > /DATA01/yilibd_opt/logs/sqoops/log/dm_sl_request_type_ds.log 2>&1;

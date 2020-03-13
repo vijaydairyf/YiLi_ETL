@@ -1,0 +1,32 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect 'jdbc:sqlserver://10.140.5.157:1433;username=bi;password=ynbi2017;database=zkt' \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--delete-target-dir \
+--query "select 
+       d.erpid      as customer_id,
+       p.code       as item_no,
+       a.productnum as quantity,
+       a.yj_time    as period_date,
+    a.id,
+       round(a.productnum* t2.type_factorrev / 1000,5) as ton
+  from rserver1.zktreport.dbo.fact_qc a
+ inner join zkt.dbo.cd_product p
+    on a.productid = p.id
+ inner join zkt.dbo.cu_dealer d
+    on a.dealerid = d.id
+  left join (select tt1.um_type,
+                    tt1.item_id,
+                    tt1.type_factor,
+                    tt1.type_factorrev,
+                    tt1.trans_cnt,
+                    tt2.item_no product_code
+               from zktbi.dbo.cux_item_jz tt1
+               left join zktbi.dbo.wlxx tt2
+                 on (tt1.item_id = tt2.item_id)) t2
+    on (p.item_id = t2.item_id) where  \$CONDITIONS and a.yj_time >= cast(convert(varchar(10),getdate()-61,120) as date)" -m 1 \
+--target-dir /apps/hive/warehouse/bigdata_ld.db/fact_sl_ld_zkt_inv_qcs_tmp -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=fact_sl_ld_zkt_inv_qcs_tmp > /DATA01/yilibd_opt/logs/sqoops/log/fact_sl_ld_zkt_inv_qcs_tmp.log 2>&1;
+

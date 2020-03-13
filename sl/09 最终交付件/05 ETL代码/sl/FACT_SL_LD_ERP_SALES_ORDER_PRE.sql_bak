@@ -1,0 +1,88 @@
+-------------------------------------------------------------------------------
+-- (c) copyright capgemini
+-- file name:               FACT_SL_LD_ERP_SALES_ORDER_PRE.sql
+-- source table:            bigdata_ld.CUX_OE_ORDER_LINES_BIGDATA_B_SL,bigdata_ld.OE_ORDER_HEADERS_ALL,bigdata_ld.OE_TRANSACTION_TYPES_TL,bigdata_ld.HR_ALL_ORGANIZATION_UNITS,bigdata_ld.INV_ORGANIZATION_INFO_V,bigdata_ld.CUX_CUSTOMER,bigdata_ld.OE_DEMAND_CLASSES_V,bigdata_ld.hz_cust_site_uses_all,bigdata_ld.PO_LOCATION_ASSOCIATIONS_ALL,bigdata_ld.hr_locations_all,bigdata_ld.HR_ALL_ORGANIZATION_UNITS,bigdata_ld.ORG_ORGANIZATION_DEFINITIONS
+-- target table:            bigdata_dw.FACT_SL_LD_ERP_SALES_ORDER
+-- project:
+-- note:
+-- purpose:                 ERP销售订单ld层表
+--=============================================================================
+-- creation date:       2018-10-21
+-- origin author:       capgemini
+--no
+-- version: %1.0%
+--
+-- modification history
+-- --------------------
+-- date         byperson        description
+-- ----------   --------------  -----------------------------------------------
+-- 2018-10-21   capgemini       
+-------------------------------------------------------------------------------
+insert overwrite table bigdata_ld.FACT_SL_LD_ERP_SALES_ORDER_PRE
+SELECT 
+OL.REQUEST_DATE  REQUEST_DATE,
+--TO_CHAR(OL.REQUEST_DATE, 'YYYYMMDD') REQUEST_DATE, --订单时间
+       CUST.SEGMENT1 business_name, --事业部
+       IOI.OPERATING_UNIT OPERATING_UNIT, --机构（公司，工厂）
+       HOU.NAME OU_NAME,
+       HOU.ORGANIZATION_ID as OU_ID,
+       IOI.ORGANIZATION_ID as ORGANIZATION_ID , --仓库
+       IOI.ORGANIZATION_CODE as ORGANIZATION_CODE, --仓库代码
+       OT.NAME as ORDER_TYPE, --订单类型
+       OH.ORDER_NUMBER as ORDER_NUMBER, --订单编号
+       OL.DEMAND_CLASS_CODE as DEMAND_CLASS_CODE, --分配工厂代码
+       DC.DEMAND_CLASS as DEMAND_CLASS, --分配工厂
+       CUST.CUST_ACCOUNT_ID as CUST_ACCOUNT_ID, --客户编号
+       CUST.CUSTOMER_TYPE as CUSTOMER_TYPE, --客户类型
+       CUST.TERRITORY_ID as TERRITORY_ID, --区域编号
+       OL.INVOICE_TO_ORG_ID as INVOICE_TO_ORG_ID, --客户地址编号
+       OL.FLOW_STATUS_CODE as FLOW_STATUS_CODE, --行状态
+       OL.INVENTORY_ITEM_ID as INVENTORY_ITEM_ID, --品项
+       OL.ORDERED_ITEM as ORDERED_ITEM, --品项代码 （12位表示）
+       (case when OL.LINE_CATEGORY_CODE='RETURN' then -1 else 1 end)*OL.ORDERED_QUANTITY as SALES_QTY,
+       --DECODE(OL.LINE_CATEGORY_CODE, 'RETURN', -1, 1) * OL.ORDERED_QUANTITY as SALES_QTY, --订单数量
+       (case when OL.LINE_CATEGORY_CODE='RETURN' then -1 else 1 end)*OL.QUANTITY_BOX as SALES_QTY_BOX,
+      -- DECODE(OL.LINE_CATEGORY_CODE, 'RETURN', -1, 1) * OL.QUANTITY_BOX as SALES_QTY_BOX, --发货数量(件)
+      (case when OL.LINE_CATEGORY_CODE='RETURN' then -1 else 1 end)*OL.QUANTITY_TON as SALES_QTY_TOM,
+      -- DECODE(OL.LINE_CATEGORY_CODE, 'RETURN', -1, 1) * OL.QUANTITY_TON as SALES_QTY_TOM, --发货数量(吨)
+       OL.UNIT_SELLING_PRICE as UNIT_SELLING_PRICE, --销售单价
+       OL.UNIT_LIST_PRICE as UNIT_LIST_PRICE, --价目表
+       OH.BOOKED_FLAG as BOOKED_FLAG, --订单登记标志
+       OH.BOOKED_DATE as BOOKED_DATE, --订单登记时间
+       OL.LATEST_ACCEPTABLE_DATE as LATEST_ACCEPTABLE_DATE, --要求到货时间
+       OL.ATTRIBUTE18 as ATTRIBUTE18,
+       OL.ACTUAL_SHIPMENT_DATE as ACTUAL_SHIPMENT_DATE,
+       OH.CUST_PO_NUMBER as CUST_PO_NUMBER,
+       OL.HEADER_ID as HEADER_ID,
+       OL.LINE_ID as LINE_ID,
+       OL.SHIPPING_METHOD_CODE as SHIPPING_METHOD_CODE,
+       OL.SHIP_TO_ORG_ID as SHIP_TO_ORG_ID,
+       OH.ORDERED_DATE as ORDERED_DATE,
+       OH.ATTRIBUTE1 as ATTRIBUTE1,
+       OL.CANCELLED_FLAG as CANCELLED_FLAG,
+       OL.SHIPPED_QUANTITY as SHIPPED_QUANTITY,
+       OL.ORDER_QUANTITY_UOM as ORDER_QUANTITY_UOM,
+       OH.ATTRIBUTE2 as ATTRIBUTE2,
+       OL.CANCELLED_QUANTITY as CANCELLED_QUANTITY,
+       OL.ATTRIBUTE19 as ATTRIBUTE19,
+       OL.ATTRIBUTE20 as ATTRIBUTE20,
+       OL.CREATION_DATE as CREATION_DATE,
+       OL.LAST_UPDATE_DATE as LAST_UPDATE_DATE,
+       ood.ORGANIZATION_id as receive_wh_id,--收货仓库
+       ood.ORGANIZATION_code as receive_wh_code, --收货仓库
+       current_date as INSERT_DT
+  FROM 
+( 
+ select * from 
+   bigdata_ld.CUX_OE_ORDER_LINES_BIGDATA_B_SL where date_>=substr(add_months(date_sub(current_date,-1),-1*month(date_sub(current_date,-1))+1),1,7) and substr(LAST_UPDATE_DATE,1,10)>=date_format((add_months(current_date,-1)),'yyyy-MM-01')
+ )  OL inner join  bigdata_ld.OE_ORDER_HEADERS_ALL OH on OH.HEADER_ID = OL.HEADER_ID
+       inner join bigdata_ld.OE_TRANSACTION_TYPES_TL    OT  on  OH.ORDER_TYPE_ID = OT.TRANSACTION_TYPE_ID and OT.LANGUAGE = 'ZHS'
+       left join bigdata_ld.HR_ALL_ORGANIZATION_UNITS   HOU on  OH.ORG_ID = HOU.ORGANIZATION_ID
+       left join bigdata_ld.INV_ORGANIZATION_INFO_V     IOI on  OL.SHIP_FROM_ORG_ID = IOI.ORGANIZATION_ID
+       left join bigdata_ld.CUX_CUSTOMER   CUST on  OL.INVOICE_TO_ORG_ID = CUST.SITE_USE_ID 
+       left join bigdata_ld.OE_DEMAND_CLASSES_V  DC on OL.DEMAND_CLASS_CODE = DC.DEMAND_CLASS_CODE
+       left join bigdata_ld.hz_cust_site_uses_all csu on ol.SHIP_TO_ORG_ID = csu.site_use_id
+       left join bigdata_ld.PO_LOCATION_ASSOCIATIONS_ALL PLA on csu.site_use_id = pla.site_use_id
+       left join bigdata_ld.hr_locations_all hll on pla.location_id = hll.location_id
+       left join bigdata_ld.HR_ALL_ORGANIZATION_UNITS  hou1 on  hll.location_id = hou1.location_id and hll.inventory_organization_id = hou1.organization_id
+       left join bigdata_ld.ORG_ORGANIZATION_DEFINITIONS ood on hou1.organization_id = ood.ORGANIZATION_ID;

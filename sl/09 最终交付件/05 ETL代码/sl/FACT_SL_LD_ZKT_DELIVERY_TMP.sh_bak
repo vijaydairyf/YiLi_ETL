@@ -1,0 +1,45 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect 'jdbc:sqlserver://10.140.5.157:1433;username=bi;password=ynbi2017;database=zkt' \
+--delete-target-dir \
+--null-non-string '\\N' --null-string '\\N' \
+--query "select 
+distinct
+a.delivery_detail_id as id,
+       a.delivery_detail_id as delivery_detail_id,
+       a.source_code,
+       a.source_header_id,
+       a.source_line_id,
+       a.shipped_quantity,
+       a.requested_quantity_uom,
+       a.ship_method_code,
+       a.shipping_instructions,
+       a.packing_instructions,
+       a.freight_code,
+       a.last_update_date,
+       a.createdate,
+       a.disflag,
+       b.id jsid,
+       b.dms,
+       b.erp,
+       b.o_erp_lineid,
+       b.o_erp_deliverlineid,
+       b.o_erp_lineid_old,
+       b.jstime,       
+       (case
+         when b.dms is null then
+          'N'
+         else
+          'Y'
+       end) as received_status_code,
+       b.jstime as received_status_time,
+       'X' as oldflag,
+       '液态奶事业部' bg_name,
+       getdate() w_insert_dt,
+       getdate() w_update_dt
+ from zkterp.dbo.soa_wsh_delivery_detailsx a  left join zkt.dbo.o_erp_orderjs  b on a.delivery_detail_id=b.o_erp_lineid WHERE \$CONDITIONS and A.LAST_UPDATE_DATE >= CAST(convert(varchar(10),GETDATE()-31,120) AS DATE) AND  a.LAST_UPDATE_DATE < cast(convert(varchar(10),getdate(),120) as date)
+" -m 1 \
+--target-dir /apps/hive/warehouse/bigdata_ld.db/fact_sl_ld_zkt_delivery_tmp -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=fact_sl_ld_zkt_delivery_tmp > /DATA01/yilibd_opt/logs/sqoops/log/fact_sl_ld_zkt_delivery_tmp.log 2>&1;
+

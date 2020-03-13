@@ -1,0 +1,31 @@
+-------------------------------------------------------------------------------
+-- (c) copyright capgemini
+-- file name:               sqoop_mysql.sql
+-- source table:            mysql:tb_warehouseplan_cooldrink
+-- target table:            bigdata_ld.FACT_SL_LD_SALES_PLAN_TMP
+-- project:
+-- note:
+-- purpose:                 服务水平销售计划事实抽数脚本
+--=============================================================================
+-- creation date:       2018-10-21
+-- origin author:       capgemini
+--no
+-- version: %1.0%
+--
+-- modification history
+-- --------------------
+-- date         byperson        description
+-- ----------   --------------  -----------------------------------------------
+-- 2018-10-21   capgemini       
+-------------------------------------------------------------------------------
+sqoop import \
+--connect jdbc:mysql://10.150.2.10:3306/db_yili \
+--username root \
+--password 2017yili! \
+--query "select  trim(month) as MONTH,trim(gb_name) as BG_NAME,trim(product_code) as PRODUCT_CODE,trim(upper(warehouse_code)) as WAREHOUSE_CODE,trim(branch) as BRANCH,trim(plan_qty_ton) as PLAN_QTY_TON,trim(plan_qty_pack) as PLAN_QTY_PACK,'tb_warehouseplan_liquidmilkbusd' as SRC_TABLE,'' as CREATE_DT,current_timestamp() as W_INSERT_DT from tb_warehouseplan_liquidmilkbusd  union all  select trim(month) as month,trim(gb_name) as gb_name,trim(product_code) as product_code,trim(upper(warehouse_code)) as warehouse_code,trim(branch) as branch,trim(plan_qty_ton) as plan_qty_ton,trim(plan_qty_pack) as plan_qty_pack,'tb_warehouseplan_driedmilk' as SRC_TABLE,'' as CREATE_DT,current_timestamp() as W_INSERT_DT  from tb_warehouseplan_driedmilk  union all  select trim(month) as month,trim(gb_name) as gb_name,trim(product_code) as product_code,trim(upper(warehouse_code)) as warehouse_code,trim(branch) as branch,trim(plan_qty_ton) as plan_qty_ton,trim(plan_qty_pack) plan_qty_pack,'tb_warehouseplan_cooldrink' as SRC_TABLE,'' as CREATE_DT,current_timestamp() as W_INSERT_DT  from tb_warehouseplan_cooldrink where \$CONDITIONS" \
+--target-dir hdfs://yilihdptest/apps/hive/warehouse/bigdata_ld.db/FACT_SL_LD_SALES_PLAN_TMP \
+--delete-target-dir \
+--num-mappers 1 \
+--compress \
+--compression-codec org.apache.hadoop.io.compress.SnappyCodec \
+--fields-terminated-by '^';

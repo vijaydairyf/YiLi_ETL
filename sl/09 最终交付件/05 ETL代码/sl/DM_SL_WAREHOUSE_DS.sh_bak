@@ -1,0 +1,35 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect 'jdbc:oracle:thin:@(DESCRIPTION= (ADDRESS_LIST=(LOAD_BALANCE=YES)(FAILOVER=YES)(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.171)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.172)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.173)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=10.101.1.174)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=PROD1)))' \
+--username 'BIGDATA_PROD' \
+--password 'yzbigdatasxcg' \
+--query "select 
+to_char(b.organization_id) wh_id,
+b.ORGANIZATION_NAME wh_name,
+b.organization_code wh_code,
+a.location_id locaton,
+a.date_from,
+a.date_to,
+a.creation_date,
+a.organization_id parent_id,
+a.NAME parent_name, 
+a.LAST_UPDATE_DATE,
+b.INVENTORY_ENABLED_FLAG status,
+c.orgn_type,
+SYSDATE W_INSERT_DT,
+case when c.attribute4 is null then '非直营' else '直营' end attribute4,
+d.ATTRIBUTE2,
+d.ATTRIBUTE3,
+c.orgn_name
+from apps.HR_ALL_ORGANIZATION_UNITS a,apps.ORG_ORGANIZATION_DEFINITIONS b,
+(select distinct orgn_type,orgn_name,whse_code,attribute4 from apps.cux_bi_group_b where orgn_type is not null) c,
+(SELECT WHSE_CODE,ATTRIBUTE2,ATTRIBUTE3 FROM apps.CUX_BI_GROUP_B WHERE DEPARMENT='物流部' AND BUSINESS_UNIT_NAME='液态奶事业部') d
+where a.organization_id=b.OPERATING_UNIT 
+and b.organization_code=c.whse_code(+)
+and b.organization_code=d.whse_code(+) and \$CONDITIONS" -m 1 \
+--delete-target-dir \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--target-dir /apps/hive/warehouse/bigdata_dw.db/dm_sl_warehouse_ds -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=dm_sl_warehouse_ds > /DATA01/yilibd_opt/logs/sqoops/log/dm_sl_warehouse_ds.log 2>&1;

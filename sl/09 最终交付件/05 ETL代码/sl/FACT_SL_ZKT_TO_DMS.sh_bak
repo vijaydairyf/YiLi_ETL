@@ -1,0 +1,12 @@
+﻿#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect jdbc:oracle:thin:@10.150.2.20:1521:PROD \
+--username BIGDATA_PROD \
+--password BIGDATA_PROD \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--delete-target-dir \
+--query "select * from w_sl_zkt_to_dms where \$CONDITIONS" -m 1 \
+--target-dir /apps/hive/warehouse/bigdata_dw.db/fact_sl_zkt_to_dms -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=fact_sl_zkt_to_dms > /DATA01/yilibd_opt/logs/sqoops/log/fact_sl_zkt_to_dms.log 2>&1;

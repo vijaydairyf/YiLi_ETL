@@ -1,0 +1,361 @@
+-------------------------------------------------------------------------------
+-- (c) copyright capgemini
+-- file name:               pj_sl_order_perform_day_a/h.sql
+-- source table:            bigdata_dw.fact_sl_order_perform, bigdata_dw.w_bigdata_p,bigdata_dw.w_product_d,bigdata_dw.w_dealer_d
+-- target table:            bigdata_dm.pj_sl_order_perform_day_a
+-- project:
+-- note:
+-- purpose:                 订单履行率M表
+--=============================================================================
+-- creation date:       2018-10-21
+-- origin author:       capgemini
+--no
+-- version: %1.0%
+--
+-- modification history
+-- --------------------
+-- date         byperson        description
+-- ----------   --------------  -----------------------------------------------
+-- 2018-10-21   capgemini       
+-------------------------------------------------------------------------------
+-------------------
+
+--truncate table bigdata_dm.pj_sl_order_perform_day_a;
+insert overwrite table bigdata_dm.pj_sl_order_perform_day_a partition (date_)
+select 
+       substr(t1.booked_dt_wid,1,4) as sales_year,
+       t1.booked_dt_wid day_wid,
+       t1.bg_wid bu_wid,
+       t1.wh_wid wh_wid,
+       t1.area_wid area_wid,
+       t1.dealer_wid dealer_wid,
+       t1.product_wid product_wid,
+       t1.request_wid request_wid,
+       count(distinct t1.header_id) order_num,
+      cast(0 as bigint) as  adjust_order_num,
+      cast(0 as bigint) as  perfect_order_num,
+      cast(0 as bigint) as  ontime_receive_num,
+      cast(0 as bigint) as  ontime_shipment_num,
+       sum(t1.up_qty) time_receive_qtd_j,
+       sum(t1.down_qty) order_qtd_j,
+       sum(t1.up_wht) time_receive_qtd_t,
+       sum(t1.down_wht) order_qtd_t,
+       sum(t1.up_prod) time_receive_p_num,
+       sum(t1.down_prod) order_p_num,
+      cast(0 as bigint) as  adjust_order_j,
+      cast(0 as bigint) as  adjust_order_t,
+      cast(0 as bigint) as  instore_p_num,
+      cast(0 as bigint) as  instore_p_t,
+      cast(0 as bigint) as  sales_plan_j,
+      cast(0 as bigint) as  sales_plan_t,
+      cast(0 as bigint) as  ontime_shipment_j,
+      cast(0 as bigint) as  ontime_shipment_t,
+      cast(0 as bigint) as  shipment_qtd_j,
+      cast(0 as bigint) as  shipment_qtd_t,
+      cast(0 as bigint) as  ontime_receive_j,
+      cast(0 as bigint) as  ontime_receive_t,
+      cast(0 as bigint) as  cancel_order_j,
+      cast(0 as bigint) as  cancel_order_t,
+      cast(0 as bigint) as  unmet_t,
+      cast(0 as bigint) as  ontime_delivery,
+      avg(t2.value) target_order_per,
+      cast(0 as bigint) as  target_adjust,
+      cast(0 as bigint) as  target_cancel,
+      cast(0 as bigint) as  target_instore,
+      cast(0 as bigint) as  target_ontime_shipment,
+      cast(0 as bigint) as  target_ontime_receive,
+      cast(0 as bigint) as  target_unmet,
+      cast(0 as bigint) as  target_ontime_delivery,
+       current_date w_insert_dt,
+      cast(t1.booked_dt_wid as string)
+  from bigdata_dw.fact_sl_order_perform t1,
+ bigdata_dw.w_bigdata_p t2,
+bigdata_dw.w_product_d t3,
+bigdata_dw.w_dealer_d t4, 
+bigdata_dw.w_area_d b
+    where t1.bg_wid = t2.bg_wid and t1.booked_date between t2.start_dt and t2.end_dt and t2.name = '订单履行率'
+   and t1.product_wid=t3.row_wid and t3.product_type in ('CPCP','NFCP','SNCP')
+   and t1.dealer_code =t4.daler_code and  t4.dealer_type1='外部'
+   and t1.area_five_code = b.code and t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0
+   and t1.bg_wid <> 5
+--   and t1.booked_dt_wid>regexp_replace(date_sub(current_date,30),'-','')
+ group by t1.booked_dt_wid,
+          t1.bg_wid,
+          t1.wh_wid,
+          t1.area_wid,
+          t1.dealer_wid,
+          t1.product_wid,
+          t1.request_wid
+union all
+select  
+       substr(t1.booked_dt_wid,1,4) as sales_year,
+       t1.booked_dt_wid day_wid,
+       t1.bg_wid bu_wid,
+       t1.wh_wid wh_wid,
+       t1.area_wid area_wid,
+       t1.dealer_wid dealer_wid,
+       t1.product_wid product_wid,
+       t1.request_wid request_wid,
+      count(distinct t1.header_id) order_num,
+      cast(0 as bigint) as  adjust_order_num,
+      cast(0 as bigint) as  perfect_order_num,
+      cast(0 as bigint) as  ontime_receive_num,
+      cast(0 as bigint) as  ontime_shipment_num,
+       sum(t1.up_qty) time_receive_qtd_j,
+       sum(t1.down_qty) order_qtd_j,
+       sum(t1.up_wht) time_receive_qtd_t,
+       sum(t1.down_wht) order_qtd_t,
+       sum(t1.up_prod) time_receive_p_num,
+       sum(t1.down_prod) order_p_num,
+      cast(0 as bigint) as  adjust_order_j,
+      cast(0 as bigint) as  adjust_order_t,
+      cast(0 as bigint) as  instore_p_num,
+      cast(0 as bigint) as  instore_p_t,
+      cast(0 as bigint) as  sales_plan_j,
+      cast(0 as bigint) as  sales_plan_t,
+      cast(0 as bigint) as  ontime_shipment_j,
+      cast(0 as bigint) as  ontime_shipment_t,
+      cast(0 as bigint) as  shipment_qtd_j,
+      cast(0 as bigint) as  shipment_qtd_t,
+      cast(0 as bigint) as  ontime_receive_j,
+      cast(0 as bigint) as  ontime_receive_t,
+      cast(0 as bigint) as  cancel_order_j,
+      cast(0 as bigint) as  cancel_order_t,
+      cast(0 as bigint) as  unmet_t,
+      cast(0 as bigint) as  ontime_delivery,
+      avg(t2.value) target_order_per,
+      cast(0 as bigint) as  target_adjust,
+      cast(0 as bigint) as  target_cancel,
+      cast(0 as bigint) as  target_instore,
+      cast(0 as bigint) as  target_ontime_shipment,
+      cast(0 as bigint) as  target_ontime_receive,
+      cast(0 as bigint) as  target_unmet,
+      cast(0 as bigint) as  target_ontime_delivery,
+       current_date w_insert_dt,
+      cast(t1.booked_dt_wid as string)
+  from bigdata_dw.fact_sl_order_perform t1,
+ bigdata_dw.w_bigdata_p t2,
+bigdata_dw.w_product_d t3,
+bigdata_dw.w_dealer_d t4, 
+bigdata_dw.w_area_d b,
+bigdata_dw.fact_sl_zkt_to_dms per
+    where t1.bg_wid = t2.bg_wid and t1.booked_date between t2.start_dt and t2.end_dt and t2.name = '订单履行率'
+   and t1.product_wid=t3.row_wid and t3.product_type in ('CPCP','NFCP','SNCP')
+   and t1.dealer_code =t4.daler_code and  t4.dealer_type1='外部'
+   and t1.area_five_code = b.code and t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0
+   and t1.bg_wid = 5
+   and t1.booked_dt_wid < per.c_date 
+   and b.big_area_name = per.bg_region_name 
+   and b.area_name = per.bg_area_name
+  -- and t1.booked_dt_wid>regexp_replace(date_sub(current_date,30),'-','')
+ group by t1.booked_dt_wid,
+          t1.bg_wid,
+          t1.wh_wid,
+          t1.area_wid,
+          t1.dealer_wid,
+          t1.product_wid,
+          t1.request_wid
+---------
+union all
+select  
+       substr(t1.booked_dt_wid,1,4) as sales_year,
+       t1.booked_dt_wid day_wid,
+       t1.bg_wid bu_wid,
+       t1.wh_wid wh_wid,
+       t1.area_wid area_wid,
+       t1.dealer_wid dealer_wid,
+       t1.product_wid product_wid,
+       t1.request_wid request_wid,
+       count(distinct t1.header_id) order_num,
+      cast(0 as bigint) as  adjust_order_num,
+      cast(0 as bigint) as  perfect_order_num,
+      cast(0 as bigint) as  ontime_receive_num,
+      cast(0 as bigint) as  ontime_shipment_num,
+       sum(t1.up_qty) time_receive_qtd_j,
+       sum(t1.down_qty) order_qtd_j,
+       sum(t1.up_wht) time_receive_qtd_t,
+       sum(t1.down_wht) order_qtd_t,
+       sum(t1.up_prod) time_receive_p_num,
+       sum(t1.down_prod) order_p_num,
+      cast(0 as bigint) as  adjust_order_j,
+      cast(0 as bigint) as  adjust_order_t,
+      cast(0 as bigint) as  instore_p_num,
+      cast(0 as bigint) as  instore_p_t,
+      cast(0 as bigint) as  sales_plan_j,
+      cast(0 as bigint) as  sales_plan_t,
+      cast(0 as bigint) as  ontime_shipment_j,
+      cast(0 as bigint) as  ontime_shipment_t,
+      cast(0 as bigint) as  shipment_qtd_j,
+      cast(0 as bigint) as  shipment_qtd_t,
+      cast(0 as bigint) as  ontime_receive_j,
+      cast(0 as bigint) as  ontime_receive_t,
+      cast(0 as bigint) as  cancel_order_j,
+      cast(0 as bigint) as  cancel_order_t,
+      cast(0 as bigint) as  unmet_t,
+      cast(0 as bigint) as  ontime_delivery,
+      avg(t2.value) target_order_per,
+      cast(0 as bigint) as  target_adjust,
+      cast(0 as bigint) as  target_cancel,
+      cast(0 as bigint) as  target_instore,
+      cast(0 as bigint) as  target_ontime_shipment,
+      cast(0 as bigint) as  target_ontime_receive,
+      cast(0 as bigint) as  target_unmet,
+      cast(0 as bigint) as  target_ontime_delivery,
+       current_date w_insert_dt,
+      cast(t1.booked_dt_wid as string)
+  from bigdata_dw.fact_sl_order_perform t1,
+ bigdata_dw.w_bigdata_p t2,
+bigdata_dw.w_product_d t3,
+bigdata_dw.w_dealer_d t4, 
+bigdata_dw.w_area_d b
+    where t1.bg_wid = t2.bg_wid and t1.booked_date between t2.start_dt and t2.end_dt and t2.name = '订单履行率'
+   and t1.product_wid=t3.row_wid and t3.product_type in ('CPCP','NFCP','SNCP')
+   and t1.dealer_code =t4.daler_code and  t4.dealer_type1='外部'
+   and t1.area_five_code = b.code and t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0
+   and t1.bg_wid = 5
+   and not exists(select 1 from bigdata_dw.fact_sl_zkt_to_dms per where b.big_area_name = per.bg_region_name and b.area_name = per.bg_area_name )
+   --and t1.booked_dt_wid>regexp_replace(date_sub(current_date,30),'-','')
+ group by t1.booked_dt_wid,
+          t1.bg_wid,
+          t1.wh_wid,
+          t1.area_wid,
+          t1.dealer_wid,
+          t1.product_wid,
+          t1.request_wid
+union all
+
+select  
+       substr(t1.booked_dt_wid,1,4) as sales_year,
+       t1.booked_dt_wid day_wid,
+       t1.bg_wid bu_wid,
+       t1.wh_wid wh_wid,
+       t1.area_wid area_wid,
+       t1.dealer_wid dealer_wid,
+       t1.product_wid product_wid,
+       t1.request_wid request_wid,
+       count(distinct t1.header_id) order_num,
+      cast(0 as bigint) as  adjust_order_num,
+      cast(0 as bigint) as  perfect_order_num,
+      cast(0 as bigint) as  ontime_receive_num,
+      cast(0 as bigint) as  ontime_shipment_num,
+       sum(case when t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0 then t1.up_qty else 0 end) time_receive_qtd_j,
+       sum(t1.down_qty) order_qtd_j,
+       sum(case when t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0 then t1.up_wht else 0 end) time_receive_qtd_t,
+       sum(t1.down_wht) order_qtd_t,
+       sum(case when  t1.down_qty > 0  then t1.up_prod else 0 end) time_receive_p_num,
+       sum(case when  t1.down_qty > 0  then t1.down_prod else 0 end) order_p_num,
+      cast(0 as bigint) as  adjust_order_j,
+      cast(0 as bigint) as  adjust_order_t,
+      cast(0 as bigint) as  instore_p_num,
+      cast(0 as bigint) as  instore_p_t,
+      cast(0 as bigint) as  sales_plan_j,
+      cast(0 as bigint) as  sales_plan_t,
+      cast(0 as bigint) as  ontime_shipment_j,
+      cast(0 as bigint) as  ontime_shipment_t,
+      cast(0 as bigint) as  shipment_qtd_j,
+      cast(0 as bigint) as  shipment_qtd_t,
+      cast(0 as bigint) as  ontime_receive_j,
+      cast(0 as bigint) as  ontime_receive_t,
+      cast(0 as bigint) as  cancel_order_j,
+      cast(0 as bigint) as  cancel_order_t,
+      cast(0 as bigint) as  unmet_t,
+      cast(0 as bigint) as  ontime_delivery,
+       avg(t2.value) target_order_per,
+      cast(0 as bigint) as  target_adjust,
+      cast(0 as bigint) as  target_cancel,
+      cast(0 as bigint) as  target_instore,
+      cast(0 as bigint) as  target_ontime_shipment,
+      cast(0 as bigint) as  target_ontime_receive,
+      cast(0 as bigint) as  target_unmet,
+      cast(0 as bigint) as  target_ontime_delivery,
+       current_date w_insert_dt,
+      cast(t1.booked_dt_wid as string)
+  from bigdata_dw.fact_sl_order_perform t1,
+ bigdata_dw.w_bigdata_p t2,
+bigdata_dw.w_product_d t3,
+bigdata_dw.w_dealer_d t4, 
+bigdata_dw.w_area_d b,
+bigdata_dw.fact_sl_zkt_to_dms per
+    where t1.bg_wid = t2.bg_wid and t1.booked_date between t2.start_dt and t2.end_dt and t2.name = '订单履行率'
+   and t1.product_wid=t3.row_wid and t3.product_type in ('CPCP','NFCP','SNCP')
+   and t1.dealer_code =t4.daler_code and  t4.dealer_type1='外部'
+   and t1.area_five_code = b.code 
+   and t1.bg_wid = 5
+   and t1.booked_dt_wid >= per.c_date 
+   and b.big_area_name = per.bg_region_name 
+   and b.area_name = per.bg_area_name
+  -- and t1.booked_dt_wid>regexp_replace(date_sub(current_date,30),'-','')
+ group by t1.booked_dt_wid,
+          t1.bg_wid,
+          t1.wh_wid,
+          t1.area_wid,
+          t1.dealer_wid,
+          t1.product_wid,
+          t1.request_wid
+union all
+select
+       substr(t1.booked_dt_wid,1,4) as sales_year,
+       t1.booked_dt_wid day_wid,
+       t1.bg_wid bu_wid,
+       t1.wh_wid wh_wid,
+       t1.area_wid area_wid,
+       t1.dealer_wid dealer_wid,
+       t1.product_wid product_wid,
+       t1.request_wid request_wid,
+       count(distinct t1.header_id) order_num,
+      cast(0 as bigint) as  adjust_order_num,
+      cast(0 as bigint) as  perfect_order_num,
+      cast(0 as bigint) as  ontime_receive_num,
+      cast(0 as bigint) as  ontime_shipment_num,
+       sum(case when t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0 then t1.up_qty else 0 end) time_receive_qtd_j,
+       sum(t1.down_qty) order_qtd_j,
+       sum(case when t1.erp_header_id <> '0' and t1.down_qty > 0 and t1.wh_wid+t1.request_wid>0 then t1.up_wht else 0 end) time_receive_qtd_t,
+       sum(t1.down_wht) order_qtd_t,
+       sum(case when  t1.down_qty > 0  then t1.up_prod else 0 end) time_receive_p_num,
+       sum(case when  t1.down_qty > 0  then t1.down_prod else 0 end) order_p_num,
+      cast(0 as bigint) as  adjust_order_j,
+      cast(0 as bigint) as  adjust_order_t,
+      cast(0 as bigint) as  instore_p_num,
+      cast(0 as bigint) as  instore_p_t,
+      cast(0 as bigint) as  sales_plan_j,
+      cast(0 as bigint) as  sales_plan_t,
+      cast(0 as bigint) as  ontime_shipment_j,
+      cast(0 as bigint) as  ontime_shipment_t,
+      cast(0 as bigint) as  shipment_qtd_j,
+      cast(0 as bigint) as  shipment_qtd_t,
+      cast(0 as bigint) as  ontime_receive_j,
+      cast(0 as bigint) as  ontime_receive_t,
+      cast(0 as bigint) as  cancel_order_j,
+      cast(0 as bigint) as  cancel_order_t,
+      cast(0 as bigint) as  unmet_t,
+      cast(0 as bigint) as  ontime_delivery,
+       avg(t2.value) target_order_per,
+      cast(0 as bigint) as  target_adjust,
+      cast(0 as bigint) as  target_cancel,
+      cast(0 as bigint) as  target_instore,
+      cast(0 as bigint) as  target_ontime_shipment,
+      cast(0 as bigint) as  target_ontime_receive,
+      cast(0 as bigint) as  target_unmet,
+      cast(0 as bigint) as  target_ontime_delivery,
+       current_date w_insert_dt,
+      cast(t1.booked_dt_wid as string)
+  from bigdata_dw.fact_sl_order_perform t1,
+ bigdata_dw.w_bigdata_p t2,
+bigdata_dw.w_product_d t3,
+
+bigdata_dw.w_dealer_d t4,
+bigdata_dw.w_area_d b
+ where t1.bg_wid = t2.bg_wid and t1.booked_date between t2.start_dt and t2.end_dt and t2.name = '订单履行率'
+   and t1.product_wid=t3.row_wid
+   and t1.dealer_code =t4.daler_code and  t4.dealer_type1='外部'
+   and t1.area_five_code = b.code
+   and t1.bg_wid = 6
+ --  and t1.booked_dt_wid>regexp_replace(date_sub(current_date,30),'-','')
+ group by t1.booked_dt_wid,
+          t1.bg_wid,
+          t1.wh_wid,
+          t1.area_wid,
+          t1.dealer_wid,
+          t1.product_wid,
+          t1.request_wid;
+

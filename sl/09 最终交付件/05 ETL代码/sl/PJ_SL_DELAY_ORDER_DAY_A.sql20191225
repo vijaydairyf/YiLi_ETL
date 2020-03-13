@@ -1,0 +1,269 @@
+-------------------------------------------------------------------------------
+-- (c) copyright capgemini
+-- file name:               PJ_SL_DELAY_ORDER_DAY_A.sql
+-- source table:            bigdata_dw.FACT_SL_ERP_SALES_ORDE,bigdata_dw.w_dealer_d,bigdata_dw.W_PRODUCT_D,bigdata_dw.DM_SL_WAREHOUSE_D
+-- target table:            
+-- project:
+-- note:
+-- purpose:                 滞留订单日报
+--=============================================================================
+-- creation date:       2018-10-21
+-- origin author:       capgemini
+--no
+-- version: %1.0%
+--
+-- modification history
+-- --------------------
+-- date         byperson        description
+-- ----------   --------------  -----------------------------------------------
+-- 2018-10-21   capgemini       
+-------------------------------------------------------------------------------
+insert overwrite table bigdata_dm.PJ_SL_DELAY_ORDER_DAY_A
+select sof.ordre_date_wid DAY_WID,
+       sof.bg_wid BU_WID,
+       sof.AREA_WID,
+       sof.product_wid,
+       sof.dealer_wid CUST_WID,
+       sof.request_type_wid SEND_WID,
+       case
+         when wd.dealer_type1 = '外部' then
+          sof.dealer_wid
+         when wd.dealer_type1 = '内部' then
+          sof.receive_wh_wid
+         else
+          null
+       end RECEVIED_WID,
+       wd.dealer_type1 CLINET_TYPE,
+       sof.head_no ORDER_NUM,
+       sum(sof.ton) ORDER_QTD_T,
+       sum(sof.sales_qty * sof.unit_list_price) ORDER_AMT,
+       current_timestamp W_INSERT_DT
+  from bigdata_dw.FACT_SL_ERP_SALES_ORDER sof
+  left join bigdata_dw.w_dealer_d wd
+    on sof.dealer_wid = wd.row_wid
+  left join bigdata_dw.W_PRODUCT_D wpd
+    on sof.product_wid = wpd.row_wid
+ where sof.status in ('AWAITING_SHIPPING', 'BOOKED')
+   and sof.ordertype1 not like '%补货%'
+   and wpd.product_type in ('CPCP', 'RPCP')
+   and wpd.item_category_one_code = '20'
+   and sof.bg_wid = 5
+   and sof.request_date >=
+       from_unixtime(unix_timestamp() - 90 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and sof.request_date <=
+       from_unixtime(unix_timestamp() + 30 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+ group by sof.ordre_date_wid,
+          sof.bg_wid,
+          sof.AREA_WID,
+          sof.product_wid,
+          sof.dealer_wid,
+          sof.request_type_wid,
+          case
+            when wd.dealer_type1 = '外部' then
+             sof.dealer_wid
+            when wd.dealer_type1 = '内部' then
+             sof.receive_wh_wid
+            else
+             null
+          end,
+          wd.dealer_type1,
+          sof.head_no
+union all
+select sof.ordre_date_wid DAY_WID,
+       sof.bg_wid BU_WID,
+       sof.AREA_WID,
+       sof.product_wid,
+       sof.dealer_wid CUST_WID,
+       sof.request_type_wid SEND_WID,
+       case
+         when wd.dealer_type1 = '外部' then
+          sof.dealer_wid
+         when wd.dealer_type1 = '内部' then
+          sof.receive_wh_wid
+         else
+          null
+       end RECEVIED_WID,
+       wd.dealer_type1 CLINET_TYPE,
+       sof.head_id ORDER_NUM,
+       sum(sof.ton) ORDER_QTD_T,
+       sum(sof.sales_qty * sof.unit_list_price) ORDER_AMT,
+       current_timestamp W_INSERT_DT
+  from bigdata_dw.FACT_SL_ERP_SALES_ORDER sof
+  left join bigdata_dw.w_dealer_d wd
+    on sof.dealer_wid = wd.row_wid
+  left join bigdata_dw.W_PRODUCT_D wpd
+    on sof.product_wid = wpd.row_wid
+ where sof.status in ('AWAITING_SHIPPING', 'BOOKED')
+   and sof.ordertype1 not like '%补货%'
+   and wpd.item_category_one_code = '28'
+   and sof.bg_wid = 6
+   and sof.request_date >=
+       from_unixtime(unix_timestamp() - 90 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and sof.request_date <=
+       from_unixtime(unix_timestamp() + 30 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+ group by sof.ordre_date_wid,
+          sof.bg_wid,
+          sof.AREA_WID,
+          sof.product_wid,
+          sof.dealer_wid,
+          sof.request_type_wid,
+          case
+            when wd.dealer_type1 = '外部' then
+             sof.dealer_wid
+            when wd.dealer_type1 = '内部' then
+             sof.receive_wh_wid
+            else
+             null
+          end,
+          wd.dealer_type1,
+          sof.head_id
+union all
+select sof.ordre_date_wid DAY_WID,
+       sof.bg_wid BU_WID,
+       sof.AREA_WID,
+       sof.product_wid,
+       sof.dealer_wid CUST_WID,
+       sof.warehouse_wid SEND_WID,
+       sof.dealer_wid RECEVIED_WID,
+       wd.dealer_type1 CLINET_TYPE,
+       sof.head_id ORDER_NUM,
+       sum(sof.ton) ORDER_QTD_T,
+       sum(sof.sales_qty * sof.unit_list_price) ORDER_AMT,
+       current_timestamp W_INSERT_DT
+  from bigdata_dw.FACT_SL_ERP_SALES_ORDER sof
+  left join bigdata_dw.w_dealer_d wd
+    on sof.dealer_wid = wd.row_wid
+  left join bigdata_dw.W_PRODUCT_D wpd
+    on sof.product_wid = wpd.row_wid
+  left join bigdata_dw.DM_SL_WAREHOUSE_D wwd
+    on sof.warehouse_wid = wwd.row_wid
+ where sof.status in ('AWAITING_SHIPPING', 'BOOKED')
+   and sof.ordertype1 not like '%补货%'
+   and wpd.item_category_one_code = '24'
+   and wd.dealer_type1 = '外部'
+   and sof.bg_wid = 2
+   and sof.request_date >=
+       from_unixtime(unix_timestamp() - 90 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and sof.request_date <=
+       from_unixtime(unix_timestamp() + 30 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and (wwd.parent_name <> '230100 Oceania Dairy Limited' or
+       wwd.parent_name is null)
+ group by sof.ordre_date_wid,
+          sof.bg_wid,
+          sof.AREA_WID,
+          sof.product_wid,
+          sof.dealer_wid,
+          sof.warehouse_wid,
+          sof.dealer_wid,
+          wd.dealer_type1,
+          sof.head_id
+union all
+select sof.ordre_date_wid DAY_WID,
+       sof.bg_wid BU_WID,
+       sof.AREA_WID,
+       sof.product_wid,
+       sof.dealer_wid CUST_WID,
+       sof.request_type_wid SEND_WID,
+       sof.receive_wh_wid RECEVIED_WID,
+       wd.dealer_type1 CLINET_TYPE,
+       sof.head_id ORDER_NUM,
+       sum(sof.ton) ORDER_QTD_T,
+       sum(sof.sales_qty * sof.unit_list_price) ORDER_AMT,
+       current_timestamp W_INSERT_DT
+  from bigdata_dw.FACT_SL_ERP_SALES_ORDER sof
+  left join bigdata_DW.w_dealer_d wd
+    on sof.dealer_wid = wd.row_wid
+  left join bigdata_DW.W_PRODUCT_D wpd
+    on sof.product_wid = wpd.row_wid
+ where sof.status in ('AWAITING_SHIPPING', 'BOOKED')
+   and sof.ordertype1 = '奶粉内部调拨转移订单'
+   and wpd.item_category_one_code = '24'
+   and wd.dealer_type1 = '内部'
+   and sof.bg_wid = 2
+   and sof.request_date >=
+       from_unixtime(unix_timestamp() - 90 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and sof.request_date <=
+       from_unixtime(unix_timestamp() + 30 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+ group by sof.ordre_date_wid,
+          sof.bg_wid,
+          sof.AREA_WID,
+          sof.product_wid,
+          sof.dealer_wid,
+          sof.request_type_wid,
+          sof.receive_wh_wid,
+          wd.dealer_type1,
+          sof.head_id;
+
+
+
+drop table bigdata_dm.PJ_SL_DELAY_ORDER_DAY_detail;
+create table bigdata_dm.PJ_SL_DELAY_ORDER_DAY_detail as
+select warea.big_area_name,
+       warea.area_name,
+       case
+         when wd.dealer_type1 = '外部' then
+          wd.daler_name
+         when wd.dealer_type1 = '内部' then
+          wwh.wh_name
+         else
+          null
+       end daler_name,
+       wd.dealer_type1 CLINET_TYPE,
+       sof.head_no ORDER_NUM,
+       ld_od.cust_po_number as src_order,
+       wpd.product_describe,
+       case when sof.status = 'AWAITING_SHIPPING' then '等待发运'
+            when sof.status = 'BOOKED' then '已登记'
+            when sof.status = 'ENTERED' then '已输入'
+       else null end as status,
+       demand_class as assign_factory,
+       sof.sales_qty,
+       sof.ton ORDER_QTD_T,
+       ld_od.ordered_date,--订单下达时间
+       lv.desc as ship_type ,
+       sof.booked_date,--订单登记日期
+       schedule_ship_date,--计划下达时间
+       od_type.name as order_type,
+       wpd.product_type_description,
+       ld_line.SHIPPING_INSTRUCTIONS as ship_comments,
+       current_timestamp W_INSERT_DT
+  from bigdata_dw.FACT_SL_ERP_SALES_ORDER sof
+  left join bigdata_dw.w_dealer_d wd
+    on sof.dealer_wid = wd.row_wid
+  left join bigdata_dw.W_PRODUCT_D wpd
+    on sof.product_wid = wpd.row_wid
+  left join bigdata_dw.w_area_d warea
+    on sof.area_wid = warea.row_wid
+  left join bigdata_dw.dm_sl_warehouse_d wwh
+    on sof.receive_wh_wid = wwh.row_wid
+  left join bigdata_ld.FACT_SL_ld_ERP_SALES_ORDER ld_od
+    on sof.line_id = ld_od.line_id
+  left join data_lake.d_nct_cux_oe_order_lines_bigdata_b ld_line
+    on sof.line_id = ld_line.line_id
+  left join data_lake.d_par_lookup_value lv
+    on ld_od.shipping_method_code = lv.lookup_code and lv.lang = 'ZHS'
+  left join sdata_full.erp_oe_order_headers_all ac_order
+    on sof.head_id = ac_order.header_id
+  left join sdata_full.erp_oe_transaction_types_tl od_type
+    on ac_order.order_type_id = od_type.transaction_type_id and od_type.language='ZHS'
+ where sof.status in ('AWAITING_SHIPPING', 'BOOKED','ENTERED')
+   --and sof.ordertype1 not like '%补货%'
+   and wpd.product_type in ('CPCP', 'RPCP')
+   and wpd.item_category_one_code = '20'
+   and sof.bg_wid = 5
+   and sof.request_date >=
+       from_unixtime(unix_timestamp() - 90 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss")
+   and sof.request_date <=
+       from_unixtime(unix_timestamp() + 30 * 24 * 60 * 60,
+                     "yyyy-MM-dd HH:mm:ss");
+
+

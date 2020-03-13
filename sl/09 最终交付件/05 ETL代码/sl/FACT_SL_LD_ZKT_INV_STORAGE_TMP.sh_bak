@@ -1,0 +1,75 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect 'jdbc:sqlserver://10.140.5.157:1433;username=bi;password=ynbi2017;database=zkt' \
+--delete-target-dir \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--query "select d.erpid as khbh,
+       (case
+         when a.vtype = 1 then
+          '入库'
+         when a.vtype = 2 then
+          '退货到伊利'
+         when a.vtype = 3 then
+          '正常出库'
+         when a.vtype = 4 then
+          '终端退货'
+         when a.vtype = 7 and a.inoutflag = 0 then
+          '入库'
+         when a.vtype = 7 and a.inoutflag = 1 then
+          '调整出库'
+         when a.vtype = 8 then
+          '途损'
+         when a.vtype = 9 then
+          '入库'
+         else
+          ''
+       end) as bz,
+       (case
+         when a.vtype = 0 then
+          'K'
+         when a.inoutflag = 0 and a.vtype <> 0 then
+          'R'
+         when a.inoutflag = 1 then
+          'C'
+       end) as kclx,
+       p.code as wlbh,
+       p.productname as wlmc,
+       a.productnum as qty,
+       round( a.productnum * zh.type_factorrev / 1000 , 5) as wht,
+       a.createdate as swsj,
+       sa1.erpid as segment1,
+       sa2.erpid as segment2,
+       sa3.erpid as segment3,
+       sa4.erpid as segment4,
+       sa5.erpid as segment5,
+       a.id,
+       a.createdate,
+       a.updatedate,
+       '件' dw,
+       '液态奶事业部' bg_name,
+   getdate() w_insert_dt,
+   getdate() w_update_dt
+  from rserver1.zktreport.dbo.fact_jxcmc a
+  left join zkt.dbo.cd_product p
+    on a.productid = p.id
+  left join zkt.dbo.cd_productunit pt
+    on p.id = pt.productid
+   and pt.defaultstate = 1
+  left join zkt.dbo.cu_dealer d
+    on a.dealerid = d.id
+  left join zktbi.dbo.cux_item_jz zh
+    on (p.item_id = zh.item_id)
+ inner join zkt.dbo.cu_salearea sa1
+    on a.areaid1 = sa1.id
+ inner join zkt.dbo.cu_salearea sa2
+    on a.areaid2 = sa2.id
+ inner join zkt.dbo.cu_salearea sa3
+    on a.areaid3 = sa3.id
+ inner join zkt.dbo.cu_salearea sa4
+    on a.areaid4 = sa4.id
+ inner join zkt.dbo.cu_salearea sa5
+    on a.areaid5 = sa5.id where  \$CONDITIONS and a.createdate >= cast(convert(varchar(10),getdate()-31,120) as date) and  a.createdate < cast(convert(varchar(10),getdate(),120) as date)" -m 1 \
+--target-dir /apps/hive/warehouse/bigdata_ld.db/fact_sl_ld_zkt_inv_storage_tmp -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=fact_sl_ld_zkt_inv_storage_tmp > /DATA01/yilibd_opt/logs/sqoops/log/fact_sl_ld_zkt_inv_storage_tmp.log 2>&1;

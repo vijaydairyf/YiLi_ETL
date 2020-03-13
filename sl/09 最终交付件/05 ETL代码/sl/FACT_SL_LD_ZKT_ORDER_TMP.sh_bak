@@ -1,0 +1,62 @@
+#!/bin/bash
+#source ~/.bash_profile
+
+
+sqoop import \
+--connect 'jdbc:sqlserver://10.140.5.157:1433;username=bi;password=ynbi2017;database=zkt' \
+--delete-target-dir \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--query "select t1.id zkt_head_id, --智客通订单头id
+       t2.id zkt_line_id, --智客通订单行id
+       t2.pid zkt_pid, --智客通产品id
+       t3.item_id, --erp产品id
+       t3.code item_no, --erp产品编码
+       t1.dms, --智客通订单号
+       t1.erp order_number, --erp订单号
+       t4.erpid did, --erp经销商id
+       t1.receiptaddress, --收货地址id
+       t1.billtoaddress, --收单地址id
+       t1.ordertype, --订单类型
+       t1.ordertime, --下单时间
+       t1.receiveddate, --到货时间
+       t1.delstate, --是否删除
+       t1.checkstate, --审核状态
+       t1.synchronizationstate, --同步状态
+       t1.isjy, --是否建议
+       t1.shipmentdescription, --发运说明
+       t1.creator, --创建人id
+       t1.createtime, --创建时间
+       t1.updateid, --更新人id
+       t1.updatetime, --更新时间
+       t1.checktime, --审核时间
+       t1.jmb, --价目表id
+       t1.gongchang, --工厂id
+       t2.unitid, --单位id
+       t2.multiplenum, --下单倍数
+       t2.minmultiplenum, --最小下单量
+       t2.traynum, --托盘
+       t2.goodsnumber qty, --件数
+       t2.dj, --单价
+       t2.je, --金额
+       t2.dw wht, --吨位
+       '件' dw,
+       '液态奶事业部' bg_name,
+       getdate() w_insert_dt,
+       getdate() w_update_dt,
+       t5.header_id, --erp头id
+       t7.territory_id area_id
+  from zkt.dbo.o_entry t1 --存在两个产品未维护转换系数，3,21
+  left join zkt.dbo.o_entryinfo t2
+    on (t1.id = t2.oid)
+  left join zkt.dbo.cd_product t3
+    on (t2.pid = t3.id)
+  left join zkt.dbo.cu_dealer t4
+    on t1.did = t4.id
+  left join cux_om_detialx t5
+    on t1.dms = t5.old_num
+  left join zkt.dbo.cu_groupdealerarea t6
+    on t4.id = t6.dealerid
+    left join zkt.dbo.cu_salearea t7
+    on  t6.areaid = t7.id where  \$CONDITIONS and t1.updatetime >= cast(convert(varchar(10),getdate()-11,120) as date)  and t1.updatetime < cast(convert(varchar(10),getdate(),120) as date) "  -m 1 \
+--target-dir /apps/hive/warehouse/bigdata_ld.db/fact_sl_ld_zkt_order_tmp -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=fact_sl_ld_zkt_order_tmp > /DATA01/yilibd_opt/logs/sqoops/log/fact_sl_ld_zkt_order_tmp.log 2>&1;

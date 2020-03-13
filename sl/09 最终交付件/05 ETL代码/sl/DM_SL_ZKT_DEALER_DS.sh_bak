@@ -1,0 +1,53 @@
+﻿#!/bin/bash
+#source ~/.bash_profile
+
+sqoop import \
+--connect 'jdbc:sqlserver://10.140.5.157:1433;username=bi;password=ynbi2017;database=zkt' \
+--query "select distinct 
+                a.segment1 as BG_NAME,
+                CASE segment1
+                  when '酸奶事业部' THEN
+                   'SN'
+                  when '液态奶事业部' THEN
+                   'YN'
+                  when '奶粉事业部' THEN
+                   'NF'
+                  when '冷饮事业部' THEN
+                   'LY'
+                end BG_CODE,
+                a.segment3 as BG_AREA_NAME,
+                a.segment2 as BG_REGION_NAME,
+                a.segment4 as BG_CITY_GROUP_NAME,
+                a.segment5 as BG_CITY_NAME,
+                a.segment5 as CITY_NAME,
+                a.segment2 as PROVINCE_NAME,
+				getdate() as w_insert_dt,
+				getdate() as w_update_dt,
+                 'ZKT' as DATASOURCE_ID,
+                a.party_name as DEALER_ERP_NAME,				 
+                a.segment5 as COUNTY_NAME,
+				a.cust_account_id INTEGRATION_ID,
+				a.cust_account_id row_id,
+                a.party_name as DEALER_NAME,
+                a.account_number DEALER_code,
+				getdate() CREATED_ON_DT,
+				getdate() CHANGED_ON_DT,
+				getdate() AUX1_CHANGED_ON_DT,
+				a.cust_account_id,
+               a.segment1+'-'+a.segment2+'-'+a.segment3+'-'+a.segment4+'-'+a.segment5 as AREA_CODE,
+				 b.id
+               
+  from zkterp.dbo.CUX_ZKT_CUSTOMER_INFORMATION_V a,zkt.dbo.cu_dealer b
+ where a.primary_flag = 'Y'
+   and a.site_use_code = 'BILL_TO'
+   and a.org_id in (102)
+   and a.Attribute8 = 'JXS'
+   and a.customer_type = 'R'
+  -- and a.hcsu_status = 'A'
+   and a.cust_account_id=b.erpid and \$CONDITIONS" -m 1 \
+--delete-target-dir \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--target-dir /apps/hive/warehouse/bigdata_dw.db/dm_sl_zkt_dealer_ds -z --compress --fields-terminated-by '\001' --bindir /DATA01/yilibd_opt/logs/sqoops/bindir --outdir /DATA01/yilibd_opt/logs/sqoops/bindir --class-name=dm_sl_zkt_dealer_ds > /DATA01/yilibd_opt/logs/sqoops/log/dm_sl_zkt_dealer_ds.log 2>&1;
+
+
