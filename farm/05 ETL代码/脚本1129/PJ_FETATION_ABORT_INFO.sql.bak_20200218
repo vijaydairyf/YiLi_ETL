@@ -335,7 +335,6 @@ when lactation_type = '二胎牛' then 3
 when lactation_type = '三胎牛' then 4
 when lactation_type = '四胎牛' then 5 
 when lactation_type = '五胎及以上' then 6
-when lactation_type = '其它' then 7
 end as lactation_rank
 ,case when labort_days_type = '43-62天' then 1 
 when labort_days_type = '63-82天' then 2 
@@ -400,7 +399,6 @@ select cow_id
       when (lactation_cnt= 3  ) then '三胎牛' 
       when (lactation_cnt= 4  ) then '四胎牛' 
       when (lactation_cnt >= 5  ) then '五胎及以上' 
-      else  '其它'
 end as lactation_type -- 胎次类型
 ,case when  calving_type   = '流产'  then 
   case when pregant_days>=43 and pregant_days<=62 then '43-62天' 

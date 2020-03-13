@@ -24,7 +24,6 @@ insert  overwrite table BIGDATA_DM.PJ_FEEDING_RATE_INFO
 
 select t1.breed_youth_cows
 ,t1.breed_adult_cows
---繁殖牛头数
 ,t1.breed_cows
 ,t1.breed_youth_cows_period
 ,t1.breed_adult_cows_period
@@ -40,7 +39,6 @@ select t1.breed_youth_cows
  select 
  sum(breed_youth_cows) as breed_youth_cows
  ,sum(breed_adult_cows) as breed_adult_cows
- 
  ,sum(breed_cows) as breed_cows
  ,sum(breed_youth_cows_period) as breed_youth_cows_period
  ,sum(breed_adult_cows_period) as breed_adult_cows_period

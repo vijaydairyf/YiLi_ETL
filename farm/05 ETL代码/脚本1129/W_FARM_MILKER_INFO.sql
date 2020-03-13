@@ -1,23 +1,10 @@
--------------------------------------------------------------------------------
--- (c) copyright capgemini
--- file name:               W_FARM_MILKER_INFO.sql
--- source table:            
--- target table:            
--- project:
--- note:
--- purpose:                 仪器分析挤奶机数据
---=============================================================================
--- creation date:       2019-11-29
--- origin author:       capgemini
---no
--- version: %1.0%
---
--- modification history
--- --------------------
--- date         byperson        description
--- ----------   --------------  -----------------------------------------------
---2019-11-29 capgemini       
--------------------------------------------------------------------------------
+
+
+  
+  -- 挤奶机 
+  -- 问题： 1，四种自动化分类 要覆盖所有挤奶机  四种比例加和等于100%
+  ----  2, 时间相差 几年 是根据月份来？
+  
   
   insert overwrite table BIGDATA_DW.W_FARM_MILKER_INFO 
   
@@ -36,14 +23,20 @@
 ,oestrus_monitor_sys 
 ,milking_spot_brand 
 ,case when measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag= '有' and surge_dev_flag = '有' and  oestrus_monitor_sys in ('非挤奶机自带','挤奶机自带') then '全自动' 
-when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag= '有' and surge_dev_flag = '有'  then '自动' 
-when  measure_method= '电子计量' and auto_off_cup_flag = '有'   then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag= '有' and surge_dev_flag = '有' and  oestrus_monitor_sys  ='无' then '自动' 
+
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '有' and surge_dev_flag = '无' and  oestrus_monitor_sys  ='有' then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '有' and surge_dev_flag = '无' and  oestrus_monitor_sys  ='无' then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '无' and surge_dev_flag = '有' and  oestrus_monitor_sys  ='有' then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '无' and surge_dev_flag = '有' and  oestrus_monitor_sys  ='无' then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '无' and surge_dev_flag = '无' and  oestrus_monitor_sys  ='有' then '半自动' 
+when  measure_method= '电子计量' and auto_off_cup_flag = '有' and cleaning_sys_flag = '无' and surge_dev_flag = '无' and  oestrus_monitor_sys  ='无' then '半自动' 
 else    '手动'
 end  as auto_type
 
 ,case when  cleaning_sys_flag= '有'  and surge_dev_flag = '有'  then '自动' 
-when  cleaning_sys_flag= '无'  and surge_dev_flag = '无'  then '手动' 
-else  '其他'
+
+else  '手动' 
 end  as auto_clean_type
 
 ,case when  maintenance_stat ='开展' and maintenance_agmt_flag = '签署'  then '定期维保' 
@@ -57,12 +50,22 @@ when length(install_year) >4 AND  year(CURRENT_DATE)-substr(install_year,1,4)+ 1
 when length(install_year) >4 AND  year(CURRENT_DATE)-substr(install_year,1,4)+ 1 >10 then '10 年以上' 
 else '其他'
 end as install_years_type
-   ,t2.farm_name  as farm_name
+,case when supplier_name in ('无','/','.','0','') then '其他'
+   when supplier_name  is null then '其他'
+   else supplier_name end  as supplier_name
+,case when device_use is null then '其他'
+   when device_use = '' then '其他'
+   else device_use end  as device_use
+,substr(t2.open_station_dt,1,7) as open_month
+,substr(t2.close_station_dt,1,7) as close_month
+,t2.farm_code as farm_code
+,t2.farm_name  as farm_name
 ,t2.farm_org_name2 as big_area_name
 ,t2.farm_org_name3 as area_name
 ,t2.farm_org_name4 as cities_name 
 
-from data_lake.d_fac_farm_milker t1
+from (select * from data_lake.d_fac_farm_milker where install_year is not null 
+and   length(install_year) >4 and install_month is not null and length(install_month) >2 ) t1
     left join data_lake.d_pty_farm_base t2 on t1.farm_code = t2.farm_code ;
 
 

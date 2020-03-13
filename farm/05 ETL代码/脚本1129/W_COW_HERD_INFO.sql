@@ -87,8 +87,7 @@ from (
       ,t1.report_date
       ,t2.farm_code
        from 
-      (   select max(id) as id ,substr(product_dt,1,10)as report_date,farm_code from    
-	  data_lake.d_sts_milk_volume_sum  group by substr(product_dt,1,10),farm_code
+      (   select max(id) as id ,substr(product_dt,1,10)as report_date,farm_code from     data_lake.d_sts_milk_volume_sum  group by substr(product_dt,1,10),farm_code
  
       )t1 inner join data_lake.d_sts_milk_volume_sum  t2 
        on t1.id = t2.id 

@@ -29,9 +29,7 @@
   ,case when  grow_stat ='青年牛'  then 1  else 0  end  as breed_youth_cows
   ,case when  grow_stat in ('干奶牛','泌乳牛') then 1    else 0  end  as breed_adult_cows
   , case when  grow_stat in ('干奶牛','泌乳牛','青年牛')  then 1  else 0  end as  breed_cows
-  --
-  ,calving_dt  as report_date  
-  -- ,substr(calving_dt,1,10) as report_date
+  ,calving_dt  as report_date
   ,substr(calving_dt,1,7) as report_month
   ,substr(calving_dt,1,4) as report_year
 
